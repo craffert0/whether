@@ -1,0 +1,118 @@
+#! /usr/bin/env python3
+
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (C) 2025 Colin Rafferty <colin@rafferty.net>
+
+# There must be a ~/.whetherrc file like this:
+#
+#   {
+#     "auth": "eyJhb...",
+#     "lat": 40.674942,
+#     "long": -73.969016
+#     "country": "US"
+#   }
+#
+# The "country" entry is optional, and defaults to US. The "auth" entry is an
+# authentication token generated from Apple. Here are two blogposts about how
+# to generate it:
+#
+# https://dev.iachieved.it/iachievedit/weatherkit-rest-api/
+# https://mrhemanth.medium.com/how-to-use-apples-weatherkit-to-fetch-weather-data-8c4c27826f7d
+
+import json
+import os.path
+import re
+
+from http.client import *
+from pathlib import Path
+
+
+class Server:
+    def __init__(self):
+        rc = json.loads(Path(os.path.expanduser("~/.whetherrc")).read_text())
+        self.headers = {"Authorization": f'Bearer {rc["auth"]}'}
+        self.latlong = f'{rc["lat"]}/{rc["long"]}'
+        if "country" in rc:
+            self.country = "country=" + rc["country"]
+        else:
+            self.country = "country=US"
+        self.conn = HTTPSConnection("weatherkit.apple.com")
+
+    def get(self, path, params=""):
+        fullpath = "/api/v1/" + path + "/" + self.latlong
+        fullparams = self.country + params
+        req = self.conn.request(
+            "GET", f"{fullpath}?{fullparams}", headers=self.headers
+        )
+        response = self.conn.getresponse()
+        if response.status != 200:
+            raise RuntimeError(f"{response.status}: {response.reason}")
+        return json.loads(response.read())
+
+    def weather(self, dataSets):
+        return self.get("weather/en_US", f'&dataSets={",".join(dataSets)}')
+
+
+def cToF(celsius):
+    return int(32 + celsius * 1.8)
+
+
+def uncamel(s):
+    return " ".join(
+        [
+            x.lower()
+            for x in re.findall(r"[A-Z](?:[a-z]+|[A-Z]*(?=[A-Z]|$))", s)
+        ]
+    )
+
+
+def currentWeather(js):
+    print(
+        f'now: {uncamel(js["conditionCode"])}: {cToF(js["temperature"])}° ({cToF(js["temperatureApparent"])}°)'
+    )
+
+
+def forecastNextHour(js):
+    for s in js["summary"]:
+        print(
+            f'next hour: {s["condition"]}, {s["precipitationChance"]}% rain'
+        )
+
+
+def forecastDaily(js):
+    r = js["days"][0]["restOfDayForecast"]
+    print(
+        f'today: {uncamel(r["conditionCode"])}: {cToF(r["temperatureMax"])}°/{cToF(r["temperatureMin"])}°'
+    )
+
+
+def weatherAlerts(js):
+    for a in js["alerts"]:
+        print(json.dumps(a, indent=2))
+
+
+# forecastHourly
+
+
+def dumpAll(server):
+    print(json.dumps(server.weather(server.get("availability")), indent=2))
+
+
+def main():
+    server = Server()
+    results = server.weather(
+        [
+            "currentWeather",
+            "forecastNextHour",
+            "forecastDaily",
+            "weatherAlerts",
+        ]
+    )
+    currentWeather(results["currentWeather"])
+    forecastNextHour(results["forecastNextHour"])
+    forecastDaily(results["forecastDaily"])
+    weatherAlerts(results["weatherAlerts"])
+
+
+if __name__ == "__main__":
+    main()
