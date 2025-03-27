@@ -1,4 +1,4 @@
-#! /usr/bin/env python3
+#! /opt/homebrew/bin/python3
 
 # SPDX-License-Identifier: GPL-2.0-or-later
 # Copyright (C) 2025 Colin Rafferty <colin@rafferty.net>
@@ -108,41 +108,41 @@ def forecastNextHour(js):
         print(f"{shortTag(now, i, s)}: {shortCondition(s)}")
 
 
-def forecastDaily(js):
-    r = js["days"][0]["restOfDayForecast"]
+def daily(when, r):
     print(
-        f'today: {uncamel(r["conditionCode"])}: {cToF(r["temperatureMax"])}°/{cToF(r["temperatureMin"])}°'
+        f'{when}: {uncamel(r["conditionCode"])}: {cToF(r["temperatureMax"])}°/{cToF(r["temperatureMin"])}°'
     )
 
 
+def forecastDaily(js):
+    days = js["days"]
+    if datetime.datetime.now().hour < 18:
+        daily("today", days[0]["restOfDayForecast"])
+    else:
+        daily("tonight", days[0]["overnightForecast"])
+        daily("tomorrow", days[1]["daytimeForecast"])
+
+
+severities = {
+    "minor": "😐",
+    "moderate": "😟",
+    "severe": "😧",
+    "extreme": "😬",
+}
+
+
 def weatherAlerts(js):
-    # {
-    #     "name": "WeatherAlertSummary",
-    #     "id": "7c891503-e71a-50fd-abf5-c9dffa8d3ca0",
-    #     "areaId": "nyz075",
-    #     "attributionURL": "https://www.weather.gov",
-    #     "countryCode": "US",
-    #     "description": "Special Weather Statement",
-    #     "token": "SPECIAL_WEATHER_STATEMENT",
-    #     "effectiveTime": "2025-03-26T20:06:00Z",
-    #     "expireTime": "2025-03-27T23:00:00Z",
-    #     "issuedTime": "2025-03-26T20:06:00Z",
-    #     "eventOnsetTime": "2025-03-26T20:06:00Z",
-    #     "detailsUrl": "https://weatherkit.apple.com/alertDetails/index.html?ids=7c891503-e71a-50fd-abf5-c9dffa8d3ca0&lang=en-US&timezone=America/New_York",
-    #     "phenomenon": "Other",
-    #     "precedence": 0,
-    #     "severity": "moderate",
-    #     "source": "National Weather Service",
-    #     "eventSource": "US",
-    #     "urgency": "expected",
-    #     "certainty": "observed",
-    #     "importance": "normal",
-    #     "responses": [
-    #         "execute"
-    #     ]
-    # }
+    now = datetime.datetime.now(datetime.timezone.utc)
     for a in js["alerts"]:
-        print(json.dumps(a, indent=2))
+        severity = severities.get(a["severity"], "??")
+        minutes = deltaMinutes(getTime(a, "expireTime"), now)
+        if minutes < 60:
+            s = "" if minutes == 1 else "s"
+            print(f"{severity} for {minutes} minute{s}")
+        else:
+            hours = int(minutes / 60)
+            s = "" if hours == 1 else "s"
+            print(f"{severity} alert for {hours} hour{s}")
 
 
 # forecastHourly
@@ -159,13 +159,13 @@ def main():
             "currentWeather",
             "forecastNextHour",
             "forecastDaily",
-            # "weatherAlerts",
+            "weatherAlerts",
         ]
     )
     currentWeather(results["currentWeather"])
     forecastNextHour(results["forecastNextHour"])
     forecastDaily(results["forecastDaily"])
-    # weatherAlerts(results["weatherAlerts"])
+    weatherAlerts(results["weatherAlerts"])
 
 
 if __name__ == "__main__":
