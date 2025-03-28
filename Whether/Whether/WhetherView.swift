@@ -13,6 +13,9 @@ struct WhetherView: View {
             } else {
                 Text("no location 😢")
             }
+            if model.authorized {
+                Button("Refresh") { model.refresh() }
+            }
         }
     }
 }

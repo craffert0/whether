@@ -8,8 +8,7 @@ import Observation
 @Observable
 class WhetherModel: NSObject {
     private let locationManager = CLLocationManager()
-    private var lastLocation: CLLocation?
-    private var weatherService = WeatherService.shared
+    var authorized: Bool = false
     var weather: Weather?
 
     override init() {
@@ -18,18 +17,28 @@ class WhetherModel: NSObject {
         locationManager.delegate = self
         locationManager.requestAlwaysAuthorization()
     }
+
+    func refresh() {
+        locationManager.requestLocation()
+    }
 }
 
 extension WhetherModel: CLLocationManagerDelegate {
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         let status = manager.authorizationStatus
         print("location status: \(status.string)")
-        switch status {
-        case .authorizedWhenInUse, .authorizedAlways:
-            locationManager
-                .startMonitoringSignificantLocationChanges()
-        default:
-            locationManager.stopUpdatingLocation()
+        let authorized =
+            switch status {
+            case .authorizedWhenInUse, .authorizedAlways:
+                true
+            default:
+                false
+            }
+        if authorized {
+            refresh()
+        }
+        DispatchQueue.main.async {
+            self.authorized = authorized
         }
     }
 
@@ -37,9 +46,7 @@ extension WhetherModel: CLLocationManagerDelegate {
                          didUpdateLocations locations: [CLLocation])
     {
         guard let location = locations.last else { return }
-        guard lastLocation == nil else { return }
         WeatherService.shared.weather(for: location) {
-            self.lastLocation = location
             switch $0 {
             case let .success(weather):
                 self.weather = weather
