@@ -20,29 +20,6 @@ class WhetherModel: NSObject {
     }
 }
 
-extension CLAuthorizationStatus {
-    var string: String {
-        switch self {
-        case .notDetermined: "not determined"
-        case .restricted: "restricted"
-        case .denied: "denied"
-        case .authorizedWhenInUse: "authorized when in use"
-        case .authorizedAlways: "authorized always"
-        default: "unknown"
-        }
-    }
-}
-
-extension CLAccuracyAuthorization {
-    var string: String {
-        switch self {
-        case .fullAccuracy: "full accuracy"
-        case .reducedAccuracy: "reduced accuracy"
-        default: "unknown"
-        }
-    }
-}
-
 extension WhetherModel: CLLocationManagerDelegate {
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         let status = manager.authorizationStatus
@@ -61,15 +38,12 @@ extension WhetherModel: CLLocationManagerDelegate {
     {
         guard let location = locations.last else { return }
         guard lastLocation == nil else { return }
-        lastLocation = location
-        Task {
-            do {
-                let weather =
-                    try await WeatherService.shared.weather(for: location)
-                DispatchQueue.main.async {
-                    self.weather = weather
-                }
-            } catch {
+        WeatherService.shared.weather(for: location) {
+            self.lastLocation = location
+            switch $0 {
+            case let .success(weather):
+                self.weather = weather
+            case let .failure(error):
                 print("error", error.localizedDescription)
             }
         }
