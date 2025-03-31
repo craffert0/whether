@@ -12,8 +12,11 @@ struct CurrentWeatherView: View {
     }
 
     var body: some View {
-        VStack {
-            Text(w.temperature.description)
+        HStack {
+            let c = w.condition.description
+            let t = w.temperature.whether
+            Image(systemName: w.symbolName)
+            Text("\(t) \(c)")
         }
     }
 }
