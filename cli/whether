@@ -67,9 +67,25 @@ def uncamel(s):
     )
 
 
+conditions = {
+    "Clear": "􀆭",
+    "MostlyClear": "􀆫",
+    "PartlyCloudy": "􀇔",
+    "MostlyCloudy": "􀇂",
+    "Cloudy": "􀇂",
+    "Hazy": "􀆷",
+    "ScatteredThunderstorms": "􀇘",
+    "Drizzle": "􀇄",
+    "Rain": "􀇆",
+    "HeavyRain": "􀇈",
+}
+
+
 def currentWeather(js):
+    conditionCode = js["conditionCode"]
+    condition = conditions.get(conditionCode, "")
     print(
-        f'now: {uncamel(js["conditionCode"])}: {cToF(js["temperature"])}° ({cToF(js["temperatureApparent"])}°)'
+        f'now: {condition} {cToF(js["temperature"])}° ({cToF(js["temperatureApparent"])}°)  {uncamel(conditionCode)}'
     )
 
 
@@ -109,8 +125,10 @@ def forecastNextHour(js):
 
 
 def daily(when, r):
+    conditionCode = r["conditionCode"]
+    condition = conditions.get(conditionCode, "")
     print(
-        f'{when}: {uncamel(r["conditionCode"])}: {cToF(r["temperatureMax"])}°/{cToF(r["temperatureMin"])}°'
+        f'{when}: {condition} {cToF(r["temperatureMax"])}°/{cToF(r["temperatureMin"])}°  {uncamel(conditionCode)}'
     )
 
 
