@@ -14,6 +14,7 @@ struct WhetherView: View {
                 if let m = w.minuteForecast {
                     MinuteForecastView(with: m)
                 }
+                Spacer()
                 DailyForecastView(with: w.dailyForecast)
                 Spacer()
                 Text(w.currentWeather.date.formatted(
