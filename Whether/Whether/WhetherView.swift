@@ -8,8 +8,19 @@ struct WhetherView: View {
 
     var body: some View {
         VStack {
+            Spacer()
             if let w = model.weather {
                 CurrentWeatherView(with: w.currentWeather)
+                if let m = w.minuteForecast {
+                    MinuteForecastView(with: m)
+                }
+                DailyForecastView(with: w.dailyForecast)
+                Spacer()
+                Text(w.currentWeather.date.formatted(
+                    Date.FormatStyle()
+                        .hour(
+                            .conversationalDefaultDigits(amPM: .abbreviated))
+                        .minute()))
             } else {
                 Text("no location 😢")
             }
