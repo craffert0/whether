@@ -15,7 +15,9 @@ struct WhetherView: View {
                     MinuteForecastView(with: m)
                 }
                 Spacer()
-                DailyForecastView(with: w.dailyForecast)
+                TodayView(today: w.dailyForecast[0])
+                Spacer()
+                DailyForecastView(days: w.dailyForecast.forecast)
                 Spacer()
                 Text(w.currentWeather.date.formatted(
                     Date.FormatStyle()
