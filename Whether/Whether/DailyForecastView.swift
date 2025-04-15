@@ -18,7 +18,9 @@ struct DailyForecastView: View {
                 GridRow {
                     Text(d.date.formatted(Date.FormatStyle().weekday(.short)))
                     Image(systemName: d.symbolName)
-                    Text("\(d.highTemperature.whether)/\(d.lowTemperature.whether)")
+                    Text(d.highTemperature.whether)
+                    Text("/")
+                    Text(d.lowTemperature.whether)
                     Text(d.condition.description)
                 }
             }
