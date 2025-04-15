@@ -10,5 +10,7 @@
 	<string>Your location is required to show your weather</string>
 	<key>NSLocationUsageDescription</key>
 	<string>Your location is required to show your weather</string>
+	<key>NSHomeKitUsageDescription</key>
+	<string>Read weather from your devices</string>
 </dict>
 </plist>

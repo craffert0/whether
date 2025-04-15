@@ -5,9 +5,11 @@ import SwiftUI
 
 @main
 struct WhetherApp: App {
+    let homeStore = HomeStore()
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(homeStore: homeStore)
         }
     }
 }

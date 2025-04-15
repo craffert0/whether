@@ -4,14 +4,16 @@
 import SwiftUI
 
 struct ContentView: View {
+    let homeStore: HomeStore
+
     var body: some View {
         VStack {
-            WhetherView()
+            WhetherView(homeStore: homeStore)
         }
         .padding()
     }
 }
 
 #Preview {
-    ContentView()
+    ContentView(homeStore: HomeStore())
 }

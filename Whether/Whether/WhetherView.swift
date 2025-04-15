@@ -4,6 +4,7 @@
 import SwiftUI
 
 struct WhetherView: View {
+    @State var homeStore: HomeStore
     @State var model = WhetherModel()
 
     var body: some View {
@@ -16,6 +17,7 @@ struct WhetherView: View {
                 }
                 Spacer()
                 TodayView(today: w.dailyForecast[0])
+                HomeView(store: homeStore)
                 Spacer()
                 DailyForecastView(days: w.dailyForecast.forecast)
                 Spacer()
@@ -26,6 +28,7 @@ struct WhetherView: View {
                         .minute()))
             } else {
                 Text("no location 😢")
+                HomeView(store: homeStore)
             }
             if model.authorized {
                 Button("Refresh") { model.refresh() }
