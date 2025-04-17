@@ -52,7 +52,11 @@ extension EveStation: HMAccessoryDelegate {
                    service _: HMService,
                    didUpdateValueFor _: HMCharacteristic)
     {
-        temperature = temperatureC.temperature
-        humidity = (humidityC.value as? NSNumber)!.doubleValue
+        let temperature = temperatureC.temperature
+        let humidity = (humidityC.value as? NSNumber)!.doubleValue
+        Task { @MainActor in
+            self.temperature = temperature
+            self.humidity = humidity
+        }
     }
 }

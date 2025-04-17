@@ -4,8 +4,8 @@
 import SwiftUI
 
 struct WhetherView: View {
-    @State var homeStore: HomeStore
-    @State var model = WhetherModel()
+    @Environment(WhetherModel.self) private var model
+    @Environment(HomeStore.self) private var homeStore
 
     var body: some View {
         VStack {
@@ -27,12 +27,12 @@ struct WhetherView: View {
                             .conversationalDefaultDigits(amPM: .abbreviated))
                         .minute()))
             } else {
-                Text("no location 😢")
+                if model.location == nil {
+                    Text("no location 😢")
+                }
                 HomeView(store: homeStore)
             }
-            if model.authorized {
-                Button("Refresh") { model.refresh() }
-            }
+            Button("Refresh") { model.refresh() }
         }
     }
 }

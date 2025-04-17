@@ -5,11 +5,14 @@ import SwiftUI
 
 @main
 struct WhetherApp: App {
-    let homeStore = HomeStore()
+    @State private var model = WhetherModel()
+    @State private var homeStore = HomeStore()
 
     var body: some Scene {
         WindowGroup {
-            ContentView(homeStore: homeStore)
+            ContentView()
+                .environment(model)
+                .environment(homeStore)
         }
     }
 }

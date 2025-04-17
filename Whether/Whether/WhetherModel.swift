@@ -8,7 +8,7 @@ import Observation
 @Observable
 class WhetherModel: NSObject {
     private let locationManager = CLLocationManager()
-    var authorized: Bool = false
+    var location: CLLocation?
     var weather: Weather?
 
     override init() {
@@ -19,26 +19,32 @@ class WhetherModel: NSObject {
     }
 
     func refresh() {
-        locationManager.requestLocation()
+        guard let location else { return }
+        refresh(for: location)
+    }
+
+    private func refresh(for location: CLLocation) {
+        WeatherService.shared.weather(for: location) { result in
+            Task { @MainActor in
+                switch result {
+                case let .success(weather):
+                    self.weather = weather
+                case let .failure(error):
+                    print("error", error.localizedDescription)
+                }
+            }
+        }
     }
 }
 
 extension WhetherModel: CLLocationManagerDelegate {
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         let status = manager.authorizationStatus
-        print("location status: \(status.string)")
-        let authorized =
-            switch status {
-            case .authorizedWhenInUse, .authorizedAlways:
-                true
-            default:
-                false
-            }
-        if authorized {
-            refresh()
-        }
-        DispatchQueue.main.async {
-            self.authorized = authorized
+        switch status {
+        case .authorizedWhenInUse, .authorizedAlways:
+            manager.startMonitoringSignificantLocationChanges()
+        default:
+            manager.stopMonitoringSignificantLocationChanges()
         }
     }
 
@@ -46,19 +52,9 @@ extension WhetherModel: CLLocationManagerDelegate {
                          didUpdateLocations locations: [CLLocation])
     {
         guard let location = locations.last else { return }
-        WeatherService.shared.weather(for: location) {
-            switch $0 {
-            case let .success(weather):
-                self.weather = weather
-            case let .failure(error):
-                print("error", error.localizedDescription)
-            }
+        refresh(for: location)
+        Task { @MainActor in
+            self.location = location
         }
-    }
-
-    func locationManager(_: CLLocationManager,
-                         didFailWithError error: any Error)
-    {
-        print("fuck", error.localizedDescription)
     }
 }

@@ -20,7 +20,9 @@ extension HomeStore: HMHomeManagerDelegate {
         for h in mgr.homes {
             for a in h.accessories {
                 if a.uniqueIdentifier == EveStation.eveId {
-                    eve = EveStation(accessory: a)
+                    Task { @MainActor in
+                        eve = EveStation(accessory: a)
+                    }
                 }
             }
         }
