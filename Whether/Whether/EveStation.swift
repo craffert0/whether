@@ -17,8 +17,8 @@ class EveStation: NSObject {
     private var temperatureC: HMCharacteristic
     private var humidityC: HMCharacteristic
 
-    var temperature: Measurement<UnitTemperature>
-    var humidity: Double
+    var temperature: Measurement<UnitTemperature>?
+    var humidity: Double?
 
     init(accessory: HMAccessory) {
         self.accessory = accessory
@@ -39,7 +39,11 @@ class EveStation: NSObject {
         self.temperatureC = temperatureC
         self.humidityC = humidityC
         temperature = temperatureC.temperature
-        humidity = (humidityC.value as? NSNumber)!.doubleValue
+        if let number = humidityC.value as? NSNumber {
+            humidity = number.doubleValue
+        } else {
+            humidity = nil
+        }
 
         super.init()
 
@@ -53,7 +57,7 @@ extension EveStation: HMAccessoryDelegate {
                    didUpdateValueFor _: HMCharacteristic)
     {
         let temperature = temperatureC.temperature
-        let humidity = (humidityC.value as? NSNumber)!.doubleValue
+        let humidity = (humidityC.value as? NSNumber)?.doubleValue
         Task { @MainActor in
             self.temperature = temperature
             self.humidity = humidity

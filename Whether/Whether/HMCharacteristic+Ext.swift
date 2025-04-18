@@ -4,9 +4,10 @@
 import HomeKit
 
 extension HMCharacteristic {
-    var temperature: Measurement<UnitTemperature> {
+    var temperature: Measurement<UnitTemperature>? {
+        guard let number = value as? NSNumber else { return nil }
         let celsius = metadata?.units == HMCharacteristicMetadataUnitsCelsius
-        return Measurement(value: (value as? NSNumber)!.doubleValue,
+        return Measurement(value: number.doubleValue,
                            unit: celsius ? .celsius : .fahrenheit)
     }
 }

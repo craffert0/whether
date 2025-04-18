@@ -8,8 +8,10 @@ struct HomeView: View {
 
     var body: some View {
         if let eve = store.eve {
-            Text("Home \(eve.temperature.whether) \(Int(eve.humidity))%")
-                .font(.subheadline)
+            if let temperature = eve.temperature, let humidity = eve.humidity {
+                Text("Home \(temperature.whether) \(Int(humidity))%")
+                    .font(.subheadline)
+            }
         }
     }
 }
