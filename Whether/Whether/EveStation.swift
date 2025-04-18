@@ -17,37 +17,64 @@ class EveStation: NSObject {
     private var temperatureC: HMCharacteristic
     private var humidityC: HMCharacteristic
 
-    var temperature: Measurement<UnitTemperature>?
-    var humidity: Double?
+    struct Reading {
+        let temperature: Measurement<UnitTemperature>
+        let humidity: Double
+    }
 
-    init(accessory: HMAccessory) {
+    var readings = Series<Reading>()
+    var current: Reading? { readings.latest }
+    var temperature: Measurement<UnitTemperature>? { current?.temperature }
+    var humidity: Double? { current?.humidity }
+
+    init?(accessory: HMAccessory) {
         self.accessory = accessory
 
-        let temperatureC = accessory.services.first {
-            $0.uniqueIdentifier == EveStation.temperatureId
-        }!.characteristics.first {
-            $0.characteristicType == HMCharacteristicTypeCurrentTemperature
-        }!
-
-        let humidityC = accessory.services.first {
-            $0.uniqueIdentifier == EveStation.humidityId
-        }!.characteristics.first {
-            $0.characteristicType ==
-                HMCharacteristicTypeCurrentRelativeHumidity
-        }!
+        guard let temperatureC =
+            accessory.services.first(
+                where: {
+                    $0.uniqueIdentifier == EveStation.temperatureId
+                }
+            )?.characteristics.first(
+                where: {
+                    $0.characteristicType ==
+                        HMCharacteristicTypeCurrentTemperature
+                }
+            ),
+            let humidityC =
+            accessory.services.first(
+                where: {
+                    $0.uniqueIdentifier == EveStation.humidityId
+                }
+            )?.characteristics.first(
+                where: {
+                    $0.characteristicType ==
+                        HMCharacteristicTypeCurrentRelativeHumidity
+                }
+            )
+        else {
+            return nil
+        }
 
         self.temperatureC = temperatureC
         self.humidityC = humidityC
-        temperature = temperatureC.temperature
-        if let number = humidityC.value as? NSNumber {
-            humidity = number.doubleValue
-        } else {
-            humidity = nil
-        }
 
         super.init()
 
+        if let reading = next() {
+            readings.add(item: reading)
+        }
+
         self.accessory.delegate = self
+    }
+
+    private func next() -> Reading? {
+        guard let temperature = temperatureC.temperature,
+              let humidity = (humidityC.value as? NSNumber)?.doubleValue
+        else {
+            return nil
+        }
+        return Reading(temperature: temperature, humidity: humidity)
     }
 }
 
@@ -56,11 +83,10 @@ extension EveStation: HMAccessoryDelegate {
                    service _: HMService,
                    didUpdateValueFor _: HMCharacteristic)
     {
-        let temperature = temperatureC.temperature
-        let humidity = (humidityC.value as? NSNumber)?.doubleValue
-        Task { @MainActor in
-            self.temperature = temperature
-            self.humidity = humidity
+        if let reading = next() {
+            Task { @MainActor in
+                self.readings.add(item: reading)
+            }
         }
     }
 }

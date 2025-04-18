@@ -8,8 +8,10 @@ import Observation
 @Observable
 class WhetherModel: NSObject {
     private let locationManager = CLLocationManager()
-    var location: CLLocation?
-    var weather: Weather?
+    var locations = Series<CLLocation>()
+    var location: CLLocation? { locations.latest }
+    var weathers = Series<Weather>()
+    var weather: Weather? { weathers.latest }
 
     override init() {
         super.init()
@@ -28,7 +30,7 @@ class WhetherModel: NSObject {
             Task { @MainActor in
                 switch result {
                 case let .success(weather):
-                    self.weather = weather
+                    self.weathers.add(item: weather)
                 case let .failure(error):
                     print("error", error.localizedDescription)
                 }
@@ -54,7 +56,7 @@ extension WhetherModel: CLLocationManagerDelegate {
         guard let location = locations.last else { return }
         refresh(for: location)
         Task { @MainActor in
-            self.location = location
+            self.locations.add(item: location)
         }
     }
 }

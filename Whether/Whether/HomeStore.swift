@@ -16,15 +16,22 @@ class HomeStore: NSObject {
 }
 
 extension HomeStore: HMHomeManagerDelegate {
-    func homeManagerDidUpdateHomes(_: HMHomeManager) {
+    func homeManagerDidUpdateHomes(_ mgr: HMHomeManager) {
+        if let eve = HomeStore.findEve(from: mgr) {
+            Task { @MainActor in
+                self.eve = eve
+            }
+        }
+    }
+
+    private static func findEve(from mgr: HMHomeManager) -> EveStation? {
         for h in mgr.homes {
             for a in h.accessories {
                 if a.uniqueIdentifier == EveStation.eveId {
-                    Task { @MainActor in
-                        eve = EveStation(accessory: a)
-                    }
+                    return EveStation(accessory: a)
                 }
             }
         }
+        return nil
     }
 }

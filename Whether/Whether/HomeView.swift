@@ -7,11 +7,9 @@ struct HomeView: View {
     @State var store: HomeStore
 
     var body: some View {
-        if let eve = store.eve {
-            if let temperature = eve.temperature, let humidity = eve.humidity {
-                Text("Home \(temperature.whether) \(Int(humidity))%")
-                    .font(.subheadline)
-            }
+        if let c = store.eve?.current {
+            Text("Home \(c.temperature.whether) \(Int(c.humidity))%")
+                .font(.subheadline)
         }
     }
 }

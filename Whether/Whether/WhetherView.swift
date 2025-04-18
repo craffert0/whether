@@ -6,6 +6,7 @@ import SwiftUI
 struct WhetherView: View {
     @Environment(WhetherModel.self) private var model
     @Environment(HomeStore.self) private var homeStore
+    @State private var isWeatherDebugPresented: Bool = false
 
     var body: some View {
         VStack {
@@ -21,11 +22,20 @@ struct WhetherView: View {
                 Spacer()
                 DailyForecastView(days: w.dailyForecast.forecast)
                 Spacer()
-                Text(w.currentWeather.date.formatted(
-                    Date.FormatStyle()
-                        .hour(
-                            .conversationalDefaultDigits(amPM: .abbreviated))
-                        .minute()))
+                Button(w.currentWeather.date.plain_time) {
+                    isWeatherDebugPresented = true
+                }
+                .buttonStyle(.plain)
+                .popover(isPresented: $isWeatherDebugPresented) {
+                    TabView {
+                        Tab("Weather", systemImage: "sunrise") {
+                            WhetherDebugView()
+                        }
+                        Tab("Home", systemImage: "homekit") {
+                            HomeDebugView()
+                        }
+                    }
+                }
             } else {
                 if model.location == nil {
                     Text("no location 😢")
