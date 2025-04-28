@@ -22,19 +22,19 @@ class WhetherModel: NSObject {
 
     func refresh() {
         guard let location else { return }
-        refresh(for: location)
+        Task {
+            await refresh(for: location)
+        }
     }
 
-    private func refresh(for location: CLLocation) {
-        WeatherService.shared.weather(for: location) { result in
-            Task { @MainActor in
-                switch result {
-                case let .success(weather):
-                    self.weathers.add(item: weather)
-                case let .failure(error):
-                    print("error", error.localizedDescription)
-                }
-            }
+    private func refresh(for location: CLLocation) async {
+        guard let weather =
+            try? await WeatherService.shared.weather(for: location)
+        else {
+            return
+        }
+        Task { @MainActor in
+            self.weathers.add(item: weather)
         }
     }
 }
@@ -54,9 +54,14 @@ extension WhetherModel: CLLocationManagerDelegate {
                          didUpdateLocations locations: [CLLocation])
     {
         guard let location = locations.last else { return }
-        refresh(for: location)
-        Task { @MainActor in
-            self.locations.add(item: location)
+        Task {
+            guard let weather =
+                try? await WeatherService.shared.weather(for: location)
+            else { return }
+            Task { @MainActor in
+                self.locations.add(item: location)
+                self.weathers.add(item: weather)
+            }
         }
     }
 }
