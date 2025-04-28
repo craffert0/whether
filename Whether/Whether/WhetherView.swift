@@ -34,6 +34,9 @@ struct WhetherView: View {
                         Tab("Home", systemImage: "homekit") {
                             HomeDebugView()
                         }
+                        Tab("Location", systemImage: "map") {
+                            LocationDebugView()
+                        }
                     }
                 }
             } else {
