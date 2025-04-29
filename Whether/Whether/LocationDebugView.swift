@@ -31,17 +31,25 @@ struct LocationDebugView: View {
         ScrollView {
             Grid {
                 ForEach(model.locations.elements.reversed()) { e in
-                    let c = e.item.coordinate
-                    GridRow {
-                        Text(e.time.plain_time)
-                        Button("\(c.latitude)/\(c.longitude)") {
-                            let placemark =
-                                MKPlacemark(coordinate: e.item.coordinate)
-                            let mapItem = MKMapItem(placemark: placemark)
-                            mapItem.name = e.time.plain_time
-                            mapItem.openInMaps()
-                        }
-                    }
+                    PlaceGridRow(time: e.time,
+                                 coordinate: e.item.coordinate)
+                }
+            }
+        }
+    }
+
+    struct PlaceGridRow: View {
+        let time: Date
+        let coordinate: CLLocationCoordinate2D
+
+        var body: some View {
+            GridRow {
+                Text(time.plain_time)
+                Button("\(coordinate.latitude)/\(coordinate.longitude)") {
+                    let placemark = MKPlacemark(coordinate: coordinate)
+                    let mapItem = MKMapItem(placemark: placemark)
+                    mapItem.name = time.plain_time
+                    mapItem.openInMaps()
                 }
             }
         }
@@ -61,7 +69,7 @@ struct LocationDebugView: View {
                             item: CLLocation(latitude: 40.690208,
                                              longitude: -73.985239)
                         ))
-                    date = Calendar.current.date(byAdding: .minute, value: -1,
+                    date = Calendar.current.date(byAdding: .minute, value: 1,
                                                  to: date)!
                     locations.elements.append(
                         Series.Element(
@@ -69,7 +77,7 @@ struct LocationDebugView: View {
                             item: CLLocation(latitude: 40.685813,
                                              longitude: -73.983899)
                         ))
-                    date = Calendar.current.date(byAdding: .minute, value: -1,
+                    date = Calendar.current.date(byAdding: .minute, value: 1,
                                                  to: date)!
                     locations.elements.append(
                         Series.Element(
@@ -77,7 +85,7 @@ struct LocationDebugView: View {
                             item: CLLocation(latitude: 40.683780,
                                              longitude: -73.978614)
                         ))
-                    date = Calendar.current.date(byAdding: .minute, value: -1,
+                    date = Calendar.current.date(byAdding: .minute, value: 1,
                                                  to: date)!
                     locations.elements.append(
                         Series.Element(
@@ -85,7 +93,7 @@ struct LocationDebugView: View {
                             item: CLLocation(latitude: 40.680206,
                                              longitude: -73.974790)
                         ))
-                    date = Calendar.current.date(byAdding: .minute, value: -1,
+                    date = Calendar.current.date(byAdding: .minute, value: 1,
                                                  to: date)!
                     locations.elements.append(
                         Series.Element(
@@ -93,7 +101,7 @@ struct LocationDebugView: View {
                             item: CLLocation(latitude: 40.676346,
                                              longitude: -73.971717)
                         ))
-                    date = Calendar.current.date(byAdding: .minute, value: -1,
+                    date = Calendar.current.date(byAdding: .minute, value: 1,
                                                  to: date)!
                     locations.elements.append(
                         Series.Element(
@@ -101,7 +109,7 @@ struct LocationDebugView: View {
                             item: CLLocation(latitude: 40.672494,
                                              longitude: -73.970424)
                         ))
-                    date = Calendar.current.date(byAdding: .minute, value: -1,
+                    date = Calendar.current.date(byAdding: .minute, value: 1,
                                                  to: date)!
                     locations.elements.append(
                         Series.Element(
