@@ -13,11 +13,13 @@ class WhetherModel: NSObject {
     var weathers = Series<Weather>()
     var weather: Weather? { weathers.latest }
 
-    override init() {
+    init(live: Bool = true) {
         super.init()
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.delegate = self
-        locationManager.requestAlwaysAuthorization()
+        if live {
+            locationManager.desiredAccuracy = kCLLocationAccuracyBest
+            locationManager.delegate = self
+            locationManager.requestAlwaysAuthorization()
+        }
     }
 
     func refresh() {
@@ -36,6 +38,13 @@ class WhetherModel: NSObject {
         Task { @MainActor in
             self.weathers.add(item: weather)
         }
+    }
+}
+
+extension WhetherModel {
+    convenience init(locations: Series<CLLocation>) {
+        self.init(live: false)
+        self.locations = locations
     }
 }
 
