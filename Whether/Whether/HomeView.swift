@@ -4,11 +4,13 @@
 import SwiftUI
 
 struct HomeView: View {
-    @State var store: HomeStore
+    @Environment(HomeStore.self) private var store
 
     var body: some View {
-        if let c = store.eve?.current {
-            Text("Home \(c.temperature.whether) \(Int(c.humidity))%")
+        if let temperature = store.temperature,
+           let humidity = store.humidity
+        {
+            Text("Home \(temperature.whether) \(Int(humidity))%")
                 .font(.subheadline)
         }
     }

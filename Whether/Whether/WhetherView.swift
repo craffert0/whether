@@ -5,7 +5,6 @@ import SwiftUI
 
 struct WhetherView: View {
     @Environment(WhetherModel.self) private var model
-    @Environment(HomeStore.self) private var homeStore
     @State private var isWeatherDebugPresented: Bool = false
 
     var body: some View {
@@ -18,7 +17,7 @@ struct WhetherView: View {
                 }
                 Spacer()
                 TodayView(today: w.dailyForecast[0])
-                HomeView(store: homeStore)
+                HomeView()
                 Spacer()
                 DailyForecastView(days: w.dailyForecast.forecast)
                 Spacer()
@@ -43,7 +42,7 @@ struct WhetherView: View {
                 if model.location == nil {
                     Text("no location 😢")
                 }
-                HomeView(store: homeStore)
+                HomeView()
             }
             Button("Refresh") { model.refresh() }
         }
