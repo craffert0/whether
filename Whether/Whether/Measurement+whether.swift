@@ -10,3 +10,7 @@ extension Measurement<UnitTemperature> {
                                numberFormatStyle: .whether))
     }
 }
+
+extension Measurement<UnitPercent> {
+    var whether: String { "\(Int(value))\(unit.symbol)" }
+}

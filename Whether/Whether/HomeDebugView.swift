@@ -13,7 +13,7 @@ struct HomeDebugView: View {
                     GridRow {
                         Text(e.time.plain_time)
                         Text(e.item.temperature.whether)
-                        Text("\(Int(e.item.humidity))%")
+                        Text(e.item.humidity.whether)
                     }
                 }
             }

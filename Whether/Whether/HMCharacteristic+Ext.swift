@@ -10,4 +10,10 @@ extension HMCharacteristic {
         return Measurement(value: number.doubleValue,
                            unit: celsius ? .celsius : .fahrenheit)
     }
+
+    var humidity: Measurement<UnitPercent>? {
+        guard let number = value as? NSNumber else { return nil }
+        return Measurement(value: number.doubleValue,
+                           unit: .percent)
+    }
 }

@@ -10,7 +10,7 @@ struct HomeView: View {
         if let temperature = store.temperature,
            let humidity = store.humidity
         {
-            Text("Home \(temperature.whether) \(Int(humidity))%")
+            Text("Home \(temperature.whether) \(humidity.whether)")
                 .font(.subheadline)
         }
     }

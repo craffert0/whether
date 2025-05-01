@@ -13,12 +13,12 @@ class HomeStore: NSObject {
 
     struct Reading {
         let temperature: Measurement<UnitTemperature>
-        let humidity: Double
+        let humidity: Measurement<UnitPercent>
     }
 
     var readings = Series<Reading>()
     var temperature: Measurement<UnitTemperature>?
-    var humidity: Double?
+    var humidity: Measurement<UnitPercent>?
 
     override init() {
         super.init()
@@ -28,7 +28,7 @@ class HomeStore: NSObject {
     @MainActor
     private func nextReading() {
         guard let temperature = temperatureC?.temperature,
-              let humidity = (humidityC?.value as? NSNumber)?.doubleValue
+              let humidity = humidityC?.humidity
         else { return }
         self.temperature = temperature
         self.humidity = humidity
