@@ -25,7 +25,7 @@ struct WhetherView: View {
                     isWeatherDebugPresented = true
                 }
                 .buttonStyle(.plain)
-                .popover(isPresented: $isWeatherDebugPresented) {
+                .sheet(isPresented: $isWeatherDebugPresented) {
                     TabView {
                         Tab("Weather", systemImage: "sunrise") {
                             WhetherDebugView()
