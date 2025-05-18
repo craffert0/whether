@@ -28,15 +28,24 @@ from http.client import *
 from pathlib import Path
 
 
+def get_location():
+    rc = json.loads(Path(os.path.expanduser("~/.ipinforc")).read_text())
+    conn = HTTPSConnection("ipinfo.io")
+    req = conn.request(
+        "GET", "/", headers={"Authorization": f'Bearer {rc["token"]}'}
+    )
+    response = conn.getresponse()
+    if response.status != 200:
+        raise RuntimeError(f"{response.status}: {response.reason}")
+    return json.loads(response.read())
+
+
 class Server:
-    def __init__(self):
+    def __init__(self, location):
         rc = json.loads(Path(os.path.expanduser("~/.whetherrc")).read_text())
         self.headers = {"Authorization": f'Bearer {rc["auth"]}'}
-        self.latlong = f'{rc["lat"]}/{rc["long"]}'
-        if "country" in rc:
-            self.country = "country=" + rc["country"]
-        else:
-            self.country = "country=US"
+        self.latlong = location["loc"].replace(",", "/")
+        self.country = location["country"]
         self.conn = HTTPSConnection("weatherkit.apple.com")
 
     def get(self, path, params=""):
@@ -171,7 +180,8 @@ def dumpAll(server):
 
 
 def main():
-    server = Server()
+    location = get_location()
+    server = Server(location)
     results = server.weather(
         [
             "currentWeather",
@@ -180,10 +190,10 @@ def main():
             "weatherAlerts",
         ]
     )
-    currentWeather(results["currentWeather"])
-    forecastNextHour(results["forecastNextHour"])
-    forecastDaily(results["forecastDaily"])
-    weatherAlerts(results["weatherAlerts"])
+    currentWeather(results.get("currentWeather"))
+    forecastNextHour(results.get("forecastNextHour", {"summary": []}))
+    forecastDaily(results.get("forecastDaily"))
+    weatherAlerts(results.get("weatherAlerts", {"alerts": []}))
 
 
 if __name__ == "__main__":
