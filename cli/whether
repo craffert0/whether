@@ -79,11 +79,12 @@ def uncamel(s):
 conditions = {
     "Clear": "􀆭",
     "MostlyClear": "􀆫",
-    "PartlyCloudy": "􀇔",
+    "PartlyCloudy": "⛅",
     "MostlyCloudy": "􀇂",
     "Cloudy": "􀇂",
     "Hazy": "􀆷",
     "ScatteredThunderstorms": "􀇘",
+    "Thunderstorms": "⛈️",
     "Drizzle": "􀇄",
     "Rain": "􀇆",
     "HeavyRain": "􀇈",
@@ -93,8 +94,11 @@ conditions = {
 def currentWeather(js):
     conditionCode = js["conditionCode"]
     condition = conditions.get(conditionCode, "")
+    tC = js["temperature"]
+    aC = js["temperatureApparent"]
+    dC = js["temperatureDewPoint"]
     print(
-        f'now: {condition} {cToF(js["temperature"])}° ({cToF(js["temperatureApparent"])}°)  {uncamel(conditionCode)}'
+        f"now: {condition} {cToF(tC)}° ({cToF(aC)}°, {cToF(dC)}°)  {uncamel(conditionCode)}"
     )
 
 
