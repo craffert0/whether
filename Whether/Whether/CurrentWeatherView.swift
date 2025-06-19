@@ -6,6 +6,7 @@ import WeatherKit
 
 struct CurrentWeatherView: View {
     var w: CurrentWeather
+    @State private var isDetailPresented: Bool = false
 
     init(with w: CurrentWeather) {
         self.w = w
@@ -17,7 +18,37 @@ struct CurrentWeatherView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 80, height: 80)
-            Text(w.temperature.whether).font(.largeTitle)
+            Button {
+                isDetailPresented = true
+            } label: {
+                Text(w.temperature.whether).font(.largeTitle)
+            }
+            .buttonStyle(.plain)
+            .sheet(isPresented: $isDetailPresented) {
+                detailView
+            }
+        }
+    }
+
+    private var detailView: some View {
+        Grid {
+            Text(w.condition.description)
+            GridRow {
+                Text("Temperature")
+                Text(w.temperature.whether)
+            }
+            GridRow {
+                Text("Feels like")
+                Text(w.apparentTemperature.whether)
+            }
+            GridRow {
+                Text("Dew point")
+                Text(w.dewPoint.whether)
+            }
+            GridRow {
+                Text("Humidity")
+                Text("\(Int(100 * w.humidity))%")
+            }
         }
     }
 }
