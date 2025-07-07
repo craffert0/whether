@@ -46,6 +46,10 @@ struct CurrentWeatherView: View {
                 Text(w.dewPoint.whether)
             }
             GridRow {
+                Text("Wet Bulb")
+                Text(w.wetBulb.whether)
+            }
+            GridRow {
                 Text("Humidity")
                 Text("\(Int(100 * w.humidity))%")
             }
