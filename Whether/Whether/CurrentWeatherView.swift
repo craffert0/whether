@@ -32,7 +32,11 @@ struct CurrentWeatherView: View {
 
     private var detailView: some View {
         Grid {
-            Text(w.condition.description)
+            HStack {
+                Image(systemName: w.symbolName)
+                    .scaledToFit()
+                Text(w.condition.description)
+            }
             GridRow {
                 Text("Temperature")
                 Text(w.temperature.whether)
