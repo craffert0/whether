@@ -14,3 +14,29 @@ extension Measurement<UnitTemperature> {
 extension Measurement<UnitPercent> {
     var whether: String { "\(Int(value))\(unit.symbol)" }
 }
+
+extension Measurement<UnitLength> {
+    var distance: String {
+        let inches = converted(to: .inches).value
+        if inches < 1 {
+            return String(format: "%.2f", inches)
+        } else {
+            return String(Int(inches))
+        }
+    }
+
+    var whether: String {
+        "\(distance) in"
+    }
+
+    func whetherRange(through high: Measurement<UnitLength>) -> String {
+        "\(distance)-\(high.distance) in"
+    }
+}
+
+extension Measurement<UnitSpeed> {
+    var whether: String {
+        let mph = Int(converted(to: .milesPerHour).value)
+        return "\(mph) mph"
+    }
+}

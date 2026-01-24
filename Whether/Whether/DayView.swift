@@ -14,10 +14,6 @@ struct DayView: View {
     }
 
     var body: some View {
-        HStack {
-            Text(tag)
-            Text("\(m.lowTemperature.whether)/\(m.highTemperature.whether)")
-            Text(m.condition.description)
-        }
+        Text("\(tag) \(m.lowTemperature.whether)/\(m.highTemperature.whether) \(m.condition.description)")
     }
 }

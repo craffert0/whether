@@ -10,4 +10,12 @@ extension Date {
                 .hour(.conversationalDefaultDigits(amPM: .abbreviated))
                 .minute())
     }
+
+    var wholeText: String {
+        formatted(
+            Date.FormatStyle()
+                .weekday(.wide)
+                .month(.wide)
+                .day(.twoDigits))
+    }
 }

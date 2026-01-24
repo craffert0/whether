@@ -14,10 +14,7 @@ struct CurrentWeatherView: View {
 
     var body: some View {
         VStack {
-            Image(systemName: w.symbolName)
-                .resizable()
-                .scaledToFit()
-                .frame(width: 80, height: 80)
+            BigImage(systemName: w.symbolName)
             Button {
                 isDetailPresented = true
             } label: {
@@ -55,7 +52,7 @@ struct CurrentWeatherView: View {
             }
             GridRow {
                 Text("Humidity")
-                Text("\(Int(100 * w.humidity))%")
+                Text("\(w.humidity.percentage)%")
             }
         }
     }

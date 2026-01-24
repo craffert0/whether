@@ -14,15 +14,8 @@ struct DailyForecastView: View {
 
     var body: some View {
         Grid {
-            ForEach(days.dropFirst()) { d in
-                GridRow {
-                    Text(d.date.formatted(Date.FormatStyle().weekday(.short)))
-                    Image(systemName: d.symbolName)
-                    Text(d.lowTemperature.whether)
-                    Text("/")
-                    Text(d.highTemperature.whether)
-                    Text(d.condition.description)
-                }
+            ForEach(days.dropFirst()) { day in
+                DayGridRow(day: day)
             }
         }
     }
