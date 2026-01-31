@@ -6,15 +6,19 @@ import WeatherKit
 
 struct CurrentWeatherView: View {
     var w: CurrentWeather
+    var h: Forecast<HourWeather>
     @State private var isDetailPresented: Bool = false
-
-    init(with w: CurrentWeather) {
-        self.w = w
-    }
+    @State private var isHourlyPresented: Bool = false
 
     var body: some View {
         VStack {
             BigImage(systemName: w.symbolName)
+                .onTapGesture {
+                    isHourlyPresented = true
+                }.sheet(isPresented: $isHourlyPresented) {
+                    HourlyForecastView(h: h)
+                }
+
             Button {
                 isDetailPresented = true
             } label: {

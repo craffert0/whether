@@ -8,7 +8,8 @@ extension Date {
         formatted(
             Date.FormatStyle()
                 .hour(.conversationalDefaultDigits(amPM: .abbreviated))
-                .minute())
+                .minute()
+        )
     }
 
     var wholeText: String {
@@ -16,6 +17,7 @@ extension Date {
             Date.FormatStyle()
                 .weekday(.wide)
                 .month(.wide)
-                .day(.twoDigits))
+                .day(.twoDigits)
+        )
     }
 }

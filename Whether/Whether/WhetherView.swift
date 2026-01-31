@@ -11,7 +11,8 @@ struct WhetherView: View {
         VStack {
             Spacer()
             if let w = model.weather {
-                CurrentWeatherView(with: w.currentWeather)
+                CurrentWeatherView(w: w.currentWeather,
+                                   h: w.hourlyForecast)
                 if let m = w.minuteForecast {
                     MinuteForecastView(with: m)
                 }
