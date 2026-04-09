@@ -47,6 +47,8 @@ extension HomeStore: HMHomeManagerDelegate {
             self.eve = eve
             self.temperatureC = temperatureC
             self.humidityC = humidityC
+            try! await temperatureC.readValue()
+            try! await humidityC.readValue()
             nextReading()
             eve.delegate = self
             try? await temperatureC.enableNotification(true)
