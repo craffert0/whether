@@ -22,7 +22,10 @@ struct CurrentWeatherView: View {
             Button {
                 isDetailPresented = true
             } label: {
-                Text(w.temperature.whether).font(.largeTitle)
+                HStack {
+                    Text(w.temperature.whether).font(.largeTitle)
+                    Text(w.apparentTemperature.whether).font(.title3)
+                }
             }
             .buttonStyle(.plain)
             .sheet(isPresented: $isDetailPresented) {
