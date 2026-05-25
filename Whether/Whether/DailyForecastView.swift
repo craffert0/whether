@@ -6,7 +6,9 @@ import SwiftUI
 import WeatherKit
 
 extension DayWeather: @retroactive Identifiable {
-    public var id: Date { date }
+    public var id: Date {
+        date
+    }
 }
 
 struct DailyForecastView: View {

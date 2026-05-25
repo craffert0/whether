@@ -6,7 +6,9 @@ import SwiftUI
 import WeatherKit
 
 extension UVIndex.ExposureCategory {
-    var text: String { "\(description) (\(rangeValue.lowerBound)-\(rangeValue.upperBound))" }
+    var text: String {
+        "\(description) (\(rangeValue.lowerBound)-\(rangeValue.upperBound))"
+    }
 }
 
 extension Wind {

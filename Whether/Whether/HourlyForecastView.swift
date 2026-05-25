@@ -6,7 +6,9 @@ import SwiftUI
 import WeatherKit
 
 extension HourWeather: @retroactive Identifiable {
-    public var id: Date { date }
+    public var id: Date {
+        date
+    }
 }
 
 struct HourlyForecastView: View {

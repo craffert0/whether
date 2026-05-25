@@ -12,7 +12,9 @@ extension Measurement<UnitTemperature> {
 }
 
 extension Measurement<UnitPercent> {
-    var whether: String { "\(Int(value))\(unit.symbol)" }
+    var whether: String {
+        "\(Int(value))\(unit.symbol)"
+    }
 }
 
 extension Measurement<UnitLength> {

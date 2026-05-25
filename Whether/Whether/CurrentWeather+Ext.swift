@@ -5,8 +5,8 @@ import Foundation
 import WeatherKit
 
 extension CurrentWeather {
-    // https://www.omnicalculator.com/physics/wet-bulb#how-to-calculate-the-wet-bulb-temperature
-    // https://journals.ametsoc.org/view/journals/apme/50/11/jamc-d-11-0143.1.xml
+    /// https://www.omnicalculator.com/physics/wet-bulb#how-to-calculate-the-wet-bulb-temperature
+    /// https://journals.ametsoc.org/view/journals/apme/50/11/jamc-d-11-0143.1.xml
     var wetBulb: Measurement<UnitTemperature> {
         let T = temperature.converted(to: .celsius).value
         let RH = 100.0 * humidity

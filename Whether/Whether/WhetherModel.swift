@@ -9,9 +9,14 @@ import Observation
 class WhetherModel: NSObject {
     private let locationManager = CLLocationManager()
     var locations = Series<CLLocation>()
-    var location: CLLocation? { locations.latest }
+    var location: CLLocation? {
+        locations.latest
+    }
+
     var weathers = Series<Weather>()
-    var weather: Weather? { weathers.latest }
+    var weather: Weather? {
+        weathers.latest
+    }
 
     init(live: Bool = true) {
         super.init()

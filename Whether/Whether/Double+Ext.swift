@@ -2,5 +2,7 @@
 // Copyright (C) 2026 Colin Rafferty <colin@rafferty.net>
 
 extension Double {
-    var percentage: Int { Int(self * 100) }
+    var percentage: Int {
+        Int(self * 100)
+    }
 }

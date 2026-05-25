@@ -18,7 +18,9 @@ class Series<T> {
     }
 
     var elements: [Element] = []
-    var latest: T? { elements.last?.item }
+    var latest: T? {
+        elements.last?.item
+    }
 
     func add(item: T) {
         elements.append(Element(time: Date.now, item: item))
@@ -26,5 +28,7 @@ class Series<T> {
 }
 
 extension Series.Element: Identifiable {
-    var id: Date { time }
+    var id: Date {
+        time
+    }
 }
