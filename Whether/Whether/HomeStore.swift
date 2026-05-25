@@ -16,6 +16,7 @@ class HomeStore: NSObject {
         let humidity: Measurement<UnitPercent>
     }
 
+    var error: HomeError?
     var readings = Series<Reading>()
     var temperature: Measurement<UnitTemperature>?
     var humidity: Measurement<UnitPercent>?
@@ -23,6 +24,26 @@ class HomeStore: NSObject {
     override init() {
         super.init()
         mgr.delegate = self
+    }
+
+    @MainActor
+    private func updateEve(_ mgr: HMHomeManager) async throws {
+        guard let eve = mgr.eve,
+              let temperatureC = eve.eveTemperature,
+              let humidityC = eve.eveHumidity
+        else {
+            throw HomeError(text: "no eve")
+        }
+
+        self.eve = eve
+        self.temperatureC = temperatureC
+        self.humidityC = humidityC
+        try await temperatureC.readValue()
+        try await humidityC.readValue()
+        nextReading()
+        eve.delegate = self
+        try await temperatureC.enableNotification(true)
+        try await humidityC.enableNotification(true)
     }
 
     @MainActor
@@ -39,20 +60,14 @@ class HomeStore: NSObject {
 
 extension HomeStore: HMHomeManagerDelegate {
     func homeManagerDidUpdateHomes(_ mgr: HMHomeManager) {
-        guard let eve = mgr.eve,
-              let temperatureC = eve.eveTemperature,
-              let humidityC = eve.eveHumidity
-        else { return }
         Task { @MainActor in
-            self.eve = eve
-            self.temperatureC = temperatureC
-            self.humidityC = humidityC
-            try! await temperatureC.readValue()
-            try! await humidityC.readValue()
-            nextReading()
-            eve.delegate = self
-            try? await temperatureC.enableNotification(true)
-            try? await humidityC.enableNotification(true)
+            do {
+                try await updateEve(mgr)
+            } catch let error as HomeError {
+                self.error = error
+            } catch {
+                self.error = HomeError(text: "\(error)")
+            }
         }
     }
 }

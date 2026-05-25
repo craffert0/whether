@@ -7,8 +7,10 @@ struct HomeView: View {
     @Environment(HomeStore.self) private var store
 
     var body: some View {
-        if let temperature = store.temperature,
-           let humidity = store.humidity
+        if let error = store.error {
+            Text(error.text)
+        } else if let temperature = store.temperature,
+                  let humidity = store.humidity
         {
             Text("Home \(temperature.whether) \(humidity.whether)")
                 .font(.subheadline)
