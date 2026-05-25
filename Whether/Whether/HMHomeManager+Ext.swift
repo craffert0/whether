@@ -9,7 +9,7 @@ extension HMHomeManager {
             for a in h.accessories {
                 if a.uniqueIdentifier ==
                     UUID(uuidString:
-                        "9DC91FA4-8B93-511F-9D6A-984DC36A8B97")!
+                        "C24AEADC-584E-5507-AA1F-80873E2F5044")!
                 {
                     return a
                 }

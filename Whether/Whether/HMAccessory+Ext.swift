@@ -9,7 +9,7 @@ extension HMAccessory {
             where: {
                 $0.uniqueIdentifier ==
                     UUID(uuidString:
-                        "2774E641-3C93-5F97-B7E7-380A05A8FF36")!
+                        "DBC9B686-F026-59C4-BE37-FF9909F548EA")!
             }
         )?.characteristics.first(
             where: {
@@ -24,7 +24,7 @@ extension HMAccessory {
             where: {
                 $0.uniqueIdentifier ==
                     UUID(uuidString:
-                        "F04E9AB3-441B-52D7-86EF-32CA69BB5850")!
+                        "062DF9DF-3BDC-5AB5-917E-036BADEE1219")!
             }
         )?.characteristics.first(
             where: {
