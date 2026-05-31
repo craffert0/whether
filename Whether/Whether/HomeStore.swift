@@ -27,7 +27,9 @@ class HomeStore: NSObject {
     }
 
     @MainActor
-    private func updateEve(_ mgr: HMHomeManager) async throws {
+    private func setupEve(_ mgr: HMHomeManager) async throws {
+        guard eve == nil else { return }
+
         guard let eve = mgr.eve,
               let temperatureC = eve.eveTemperature,
               let humidityC = eve.eveHumidity
@@ -62,7 +64,7 @@ extension HomeStore: HMHomeManagerDelegate {
     func homeManagerDidUpdateHomes(_ mgr: HMHomeManager) {
         Task { @MainActor in
             do {
-                try await updateEve(mgr)
+                try await setupEve(mgr)
             } catch let error as HomeError {
                 self.error = error
             } catch {
