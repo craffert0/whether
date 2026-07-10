@@ -2,5 +2,6 @@
 // Copyright (C) 2026 Colin Rafferty <colin@rafferty.net>
 
 struct HomeError: Error {
-    let text: String
+    let error: Error
+    let state: HomeStoreState
 }

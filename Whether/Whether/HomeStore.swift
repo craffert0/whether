@@ -16,6 +16,7 @@ class HomeStore: NSObject {
         let humidity: Measurement<UnitPercent>
     }
 
+    var state: HomeStoreState = .begin
     var error: HomeError?
     var readings = Series<Reading>()
     var temperature: Measurement<UnitTemperature>?
@@ -34,18 +35,24 @@ class HomeStore: NSObject {
               let temperatureC = eve.eveTemperature,
               let humidityC = eve.eveHumidity
         else {
-            throw HomeError(text: "no eve")
+            state = .noEve
+            return
         }
 
+        state = .hasEve
         self.eve = eve
         self.temperatureC = temperatureC
         self.humidityC = humidityC
         try await temperatureC.readValue()
+        state = .hasTemperature
         try await humidityC.readValue()
+        state = .hasHumidity
         nextReading()
         eve.delegate = self
         try await temperatureC.enableNotification(true)
+        state = .temperatureEnabled
         try await humidityC.enableNotification(true)
+        state = .active
     }
 
     @MainActor
@@ -68,7 +75,7 @@ extension HomeStore: HMHomeManagerDelegate {
             } catch let error as HomeError {
                 self.error = error
             } catch {
-                self.error = HomeError(text: "\(error)")
+                self.error = HomeError(error: error, state: state)
             }
         }
     }

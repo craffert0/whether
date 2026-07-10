@@ -5,15 +5,22 @@ import SwiftUI
 
 struct HomeView: View {
     @Environment(HomeStore.self) private var store
+    @State private var isErrorPresented: Bool = false
 
     var body: some View {
         if let error = store.error {
-            Text(error.text)
+            Button(error.state.rawValue) {
+                isErrorPresented = true
+            }.sheet(isPresented: $isErrorPresented) {
+                Text(error.error.localizedDescription).padding()
+            }
         } else if let temperature = store.temperature,
                   let humidity = store.humidity
         {
             Text("Home \(temperature.whether) \(humidity.whether)")
                 .font(.subheadline)
+        } else {
+            Text(store.state.rawValue)
         }
     }
 }
