@@ -16,4 +16,9 @@ extension HMCharacteristic {
         return Measurement(value: number.doubleValue,
                            unit: .percent)
     }
+
+    var weatherTrend: EveWeatherTrend? {
+        guard let number = value as? NSNumber else { return nil }
+        return .init(rawValue: Int(truncating: number))
+    }
 }

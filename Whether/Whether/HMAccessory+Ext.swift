@@ -7,9 +7,7 @@ extension HMAccessory {
     var eveTemperature: HMCharacteristic? {
         services.first(
             where: {
-                $0.uniqueIdentifier ==
-                    UUID(uuidString:
-                        "DBC9B686-F026-59C4-BE37-FF9909F548EA")!
+                $0.serviceType == HMServiceTypeTemperatureSensor
             }
         )?.characteristics.first(
             where: {
@@ -22,14 +20,38 @@ extension HMAccessory {
     var eveHumidity: HMCharacteristic? {
         services.first(
             where: {
-                $0.uniqueIdentifier ==
-                    UUID(uuidString:
-                        "062DF9DF-3BDC-5AB5-917E-036BADEE1219")!
+                $0.serviceType == HMServiceTypeHumiditySensor
             }
         )?.characteristics.first(
             where: {
                 $0.characteristicType ==
                     HMCharacteristicTypeCurrentRelativeHumidity
+            }
+        )
+    }
+
+    var eveLowBattery: HMCharacteristic? {
+        services.first(
+            where: {
+                $0.serviceType == HMServiceTypeBattery
+            }
+        )?.characteristics.first(
+            where: {
+                $0.characteristicType ==
+                    HMCharacteristicTypeStatusLowBattery
+            }
+        )
+    }
+
+    var eveWeatherTrend: HMCharacteristic? {
+        services.first(
+            where: {
+                $0.serviceType == HMServiceTypeEvePressure
+            }
+        )?.characteristics.first(
+            where: {
+                $0.characteristicType ==
+                    HMCharacteristicTypeEveWeatherTrend
             }
         )
     }

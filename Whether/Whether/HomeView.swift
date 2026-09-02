@@ -9,18 +9,25 @@ struct HomeView: View {
 
     var body: some View {
         if let error = store.error {
-            Button(error.state.rawValue) {
+            Button("error") {
                 isErrorPresented = true
             }.sheet(isPresented: $isErrorPresented) {
-                Text(error.error.localizedDescription).padding()
+                Text(error.localizedDescription).padding()
             }
-        } else if let temperature = store.temperature,
-                  let humidity = store.humidity
+        } else if let temperature = store.eve?.temperature,
+                  let humidity = store.eve?.humidity
         {
-            Text("Home \(temperature.whether) \(humidity.whether)")
-                .font(.subheadline)
-        } else {
-            Text(store.state.rawValue)
+            HStack {
+                if store.eve?.lowBattery ?? false {
+                    Image(systemName: "battery.25percent")
+                        .foregroundStyle(.red)
+                }
+                if let systemName = store.eve?.weatherTrend?.systemName {
+                    Image(systemName: systemName)
+                }
+                Text("\(temperature.whether) \(humidity.whether)")
+                    .font(.subheadline)
+            }
         }
     }
 }
