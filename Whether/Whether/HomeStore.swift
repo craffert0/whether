@@ -9,8 +9,7 @@ class HomeStore: NSObject {
     private let mgr = HMHomeManager()
 
     var eve: Eve?
-    var state: HomeStoreState = .begin
-    var error: HomeError?
+    var error: Error?
 
     override init() {
         super.init()
@@ -24,12 +23,9 @@ extension HomeStore: HMHomeManagerDelegate {
             guard eve == nil else { return }
             do {
                 eve = try await Eve(from: mgr)
-                state = .active
                 await eve?.dump()
-            } catch let error as HomeError {
-                self.error = error
             } catch {
-                self.error = HomeError(error: error, state: state)
+                self.error = error
             }
         }
     }

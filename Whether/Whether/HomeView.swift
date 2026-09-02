@@ -9,10 +9,10 @@ struct HomeView: View {
 
     var body: some View {
         if let error = store.error {
-            Button(error.state.rawValue) {
+            Button("error") {
                 isErrorPresented = true
             }.sheet(isPresented: $isErrorPresented) {
-                Text(error.error.localizedDescription).padding()
+                Text(error.localizedDescription).padding()
             }
         } else if let temperature = store.eve?.temperature,
                   let humidity = store.eve?.humidity
@@ -25,8 +25,6 @@ struct HomeView: View {
                 Text("\(temperature.whether) \(humidity.whether)")
                     .font(.subheadline)
             }
-        } else {
-            Text(store.state.rawValue)
         }
     }
 }
