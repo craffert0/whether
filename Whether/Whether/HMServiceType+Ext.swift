@@ -3,14 +3,14 @@
 
 import HomeKit
 
-public let HMServiceEvePressure = "E863F00A-079E-48FF-8F27-9C2605A29F52"
-public let HMServiceEveCustomLogExchange = "E863F007-079E-48FF-8F27-9C2605A29F52"
+public let HMServiceTypeEvePressure = "E863F00A-079E-48FF-8F27-9C2605A29F52"
+public let HMServiceTypeEveLogExchange = "E863F007-079E-48FF-8F27-9C2605A29F52"
 
 public extension String {
     var serviceTypeReadable: String? {
         switch self {
-        case HMServiceEveCustomLogExchange: "EveCustomLogExchange"
-        case HMServiceEvePressure: "EvePressure"
+        case HMServiceTypeEveLogExchange: "EveLogExchange"
+        case HMServiceTypeEvePressure: "EvePressure"
         case HMServiceTypeAccessoryInformation: "AccessoryInformation"
         case HMServiceTypeAirPurifier: "AirPurifier"
         case HMServiceTypeAirQualitySensor: "AirQualitySensor"

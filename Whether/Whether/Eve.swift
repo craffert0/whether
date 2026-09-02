@@ -9,63 +9,63 @@ class Eve: NSObject {
     var temperature: Measurement<UnitTemperature>?
     var humidity: Measurement<UnitPercent>?
     var lowBattery: Bool?
+    var weatherTrend: EveWeatherTrend?
 
     private let actual: HMAccessory
     private let temperatureC: HMCharacteristic
     private let humidityC: HMCharacteristic
     private let lowBatteryC: HMCharacteristic
+    private let weatherTrendC: HMCharacteristic
 
     @MainActor
     init?(from manager: HMHomeManager) async throws {
         guard let actual = manager.eve,
               let temperatureC = actual.eveTemperature,
               let humidityC = actual.eveHumidity,
-              let lowBatteryC = actual.eveLowBattery
+              let lowBatteryC = actual.eveLowBattery,
+              let weatherTrendC = actual.eveWeatherTrend
         else { return nil }
 
         self.actual = actual
+
         self.temperatureC = temperatureC
         self.humidityC = humidityC
         self.lowBatteryC = lowBatteryC
+        self.weatherTrendC = weatherTrendC
 
         super.init()
 
+        try await self.temperatureC.readValue()
+        try await self.humidityC.readValue()
+        try await self.lowBatteryC.readValue()
+        try await self.weatherTrendC.readValue()
+
+        nextReading()
+
         self.actual.delegate = self
 
-        try await self.temperatureC.readValue()
-        temperature = self.temperatureC.temperature
         try await self.temperatureC.enableNotification(true)
-
-        try await self.humidityC.readValue()
-        humidity = self.humidityC.humidity
         try await self.humidityC.enableNotification(true)
-
-        try await self.lowBatteryC.readValue()
-        lowBattery = ((self.lowBatteryC.value as? NSNumber) ?? 0) != 0
         try await self.lowBatteryC.enableNotification(true)
+        try await self.weatherTrendC.enableNotification(true)
+    }
+
+    @MainActor
+    func nextReading() {
+        temperature = temperatureC.temperature
+        humidity = humidityC.humidity
+        lowBattery = ((lowBatteryC.value as? NSNumber) ?? 0) != 0
+        weatherTrend = weatherTrendC.weatherTrend
     }
 }
 
 extension Eve: HMAccessoryDelegate {
     func accessory(_: HMAccessory,
                    service _: HMService,
-                   didUpdateValueFor characteristic: HMCharacteristic)
+                   didUpdateValueFor _: HMCharacteristic)
     {
-        if characteristic == temperatureC {
-            let temperature = temperatureC.temperature
-            Task { @MainActor in
-                self.temperature = temperature
-            }
-        } else if characteristic == humidityC {
-            let humidity = humidityC.humidity
-            Task { @MainActor in
-                self.humidity = humidity
-            }
-        } else if characteristic == lowBatteryC {
-            let lowBattery = ((lowBatteryC.value as? NSNumber) ?? 0) != 0
-            Task { @MainActor in
-                self.lowBattery = lowBattery
-            }
+        Task { @MainActor in
+            nextReading()
         }
     }
 }

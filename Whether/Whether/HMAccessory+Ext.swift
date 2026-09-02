@@ -42,4 +42,17 @@ extension HMAccessory {
             }
         )
     }
+
+    var eveWeatherTrend: HMCharacteristic? {
+        services.first(
+            where: {
+                $0.serviceType == HMServiceTypeEvePressure
+            }
+        )?.characteristics.first(
+            where: {
+                $0.characteristicType ==
+                    HMCharacteristicTypeEveWeatherTrend
+            }
+        )
+    }
 }

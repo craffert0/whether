@@ -22,6 +22,9 @@ struct HomeView: View {
                     Image(systemName: "battery.25percent")
                         .foregroundStyle(.red)
                 }
+                if let systemName = store.eve?.weatherTrend?.systemName {
+                    Image(systemName: systemName)
+                }
                 Text("\(temperature.whether) \(humidity.whether)")
                     .font(.subheadline)
             }
