@@ -17,8 +17,14 @@ struct HomeView: View {
         } else if let temperature = store.eve?.temperature,
                   let humidity = store.eve?.humidity
         {
-            Text("Home \(temperature.whether) \(humidity.whether)")
-                .font(.subheadline)
+            HStack {
+                if store.eve?.lowBattery ?? false {
+                    Image(systemName: "battery.25percent")
+                        .foregroundStyle(.red)
+                }
+                Text("\(temperature.whether) \(humidity.whether)")
+                    .font(.subheadline)
+            }
         } else {
             Text(store.state.rawValue)
         }

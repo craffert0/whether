@@ -8,21 +8,25 @@ import Observation
 class Eve: NSObject {
     var temperature: Measurement<UnitTemperature>?
     var humidity: Measurement<UnitPercent>?
+    var lowBattery: Bool?
 
     private let actual: HMAccessory
     private let temperatureC: HMCharacteristic
     private let humidityC: HMCharacteristic
+    private let lowBatteryC: HMCharacteristic
 
     @MainActor
     init?(from manager: HMHomeManager) async throws {
         guard let actual = manager.eve,
               let temperatureC = actual.eveTemperature,
-              let humidityC = actual.eveHumidity
+              let humidityC = actual.eveHumidity,
+              let lowBatteryC = actual.eveLowBattery
         else { return nil }
 
         self.actual = actual
         self.temperatureC = temperatureC
         self.humidityC = humidityC
+        self.lowBatteryC = lowBatteryC
 
         super.init()
 
@@ -35,6 +39,10 @@ class Eve: NSObject {
         try await self.humidityC.readValue()
         humidity = self.humidityC.humidity
         try await self.humidityC.enableNotification(true)
+
+        try await self.lowBatteryC.readValue()
+        lowBattery = ((self.lowBatteryC.value as? NSNumber) ?? 0) != 0
+        try await self.lowBatteryC.enableNotification(true)
     }
 }
 
@@ -52,6 +60,11 @@ extension Eve: HMAccessoryDelegate {
             let humidity = humidityC.humidity
             Task { @MainActor in
                 self.humidity = humidity
+            }
+        } else if characteristic == lowBatteryC {
+            let lowBattery = ((lowBatteryC.value as? NSNumber) ?? 0) != 0
+            Task { @MainActor in
+                self.lowBattery = lowBattery
             }
         }
     }

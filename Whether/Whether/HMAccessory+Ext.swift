@@ -29,4 +29,17 @@ extension HMAccessory {
             }
         )
     }
+
+    var eveLowBattery: HMCharacteristic? {
+        services.first(
+            where: {
+                $0.serviceType == HMServiceTypeBattery
+            }
+        )?.characteristics.first(
+            where: {
+                $0.characteristicType ==
+                    HMCharacteristicTypeStatusLowBattery
+            }
+        )
+    }
 }
