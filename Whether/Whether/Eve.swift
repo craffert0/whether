@@ -11,7 +11,7 @@ class Eve: NSObject {
     var lowBattery: Bool?
     var weatherTrend: EveWeatherTrend?
 
-    private let actual: HMAccessory
+    private let device: HMAccessory
     private let temperatureC: HMCharacteristic
     private let humidityC: HMCharacteristic
     private let lowBatteryC: HMCharacteristic
@@ -19,14 +19,14 @@ class Eve: NSObject {
 
     @MainActor
     init?(from manager: HMHomeManager) async throws {
-        guard let actual = manager.eve,
-              let temperatureC = actual.eveTemperature,
-              let humidityC = actual.eveHumidity,
-              let lowBatteryC = actual.eveLowBattery,
-              let weatherTrendC = actual.eveWeatherTrend
+        guard let device = manager.eve,
+              let temperatureC = device.eveTemperature,
+              let humidityC = device.eveHumidity,
+              let lowBatteryC = device.eveLowBattery,
+              let weatherTrendC = device.eveWeatherTrend
         else { return nil }
 
-        self.actual = actual
+        self.device = device
 
         self.temperatureC = temperatureC
         self.humidityC = humidityC
@@ -42,7 +42,7 @@ class Eve: NSObject {
 
         nextReading()
 
-        self.actual.delegate = self
+        self.device.delegate = self
 
         try await self.temperatureC.enableNotification(true)
         try await self.humidityC.enableNotification(true)
@@ -70,7 +70,7 @@ extension Eve: HMAccessoryDelegate {
     }
 }
 
-//   for s in actual.services {
+//   for s in device.services {
 //       print("  \(s.name) \(s.isPrimaryService ? "y" : "n")/\(s.isUserInteractive ? "y" : "n"): \(s.serviceType.serviceTypeReadable ?? s.serviceType)")
 //       for c in s.characteristics {
 //           print("   \(c.localizedDescription): \(c.characteristicType.characteristicTypeReadable ?? c.characteristicType): \(c.properties.map { $0.dropFirst(24) })")
