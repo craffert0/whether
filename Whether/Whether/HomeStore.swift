@@ -7,20 +7,10 @@ import Observation
 @Observable
 class HomeStore: NSObject {
     private let mgr = HMHomeManager()
-    private var eve: HMAccessory?
-    private var temperatureC: HMCharacteristic?
-    private var humidityC: HMCharacteristic?
 
-    struct Reading {
-        let temperature: Measurement<UnitTemperature>
-        let humidity: Measurement<UnitPercent>
-    }
-
+    var eve: Eve?
     var state: HomeStoreState = .begin
     var error: HomeError?
-    var readings = Series<Reading>()
-    var temperature: Measurement<UnitTemperature>?
-    var humidity: Measurement<UnitPercent>?
 
     override init() {
         super.init()
@@ -30,40 +20,8 @@ class HomeStore: NSObject {
     @MainActor
     private func setupEve(_ mgr: HMHomeManager) async throws {
         guard eve == nil else { return }
-
-        guard let eve = mgr.eve,
-              let temperatureC = eve.eveTemperature,
-              let humidityC = eve.eveHumidity
-        else {
-            state = .noEve
-            return
-        }
-
-        state = .hasEve
-        self.eve = eve
-        self.temperatureC = temperatureC
-        self.humidityC = humidityC
-        try await temperatureC.readValue()
-        state = .hasTemperature
-        try await humidityC.readValue()
-        state = .hasHumidity
-        nextReading()
-        eve.delegate = self
-        try await temperatureC.enableNotification(true)
-        state = .temperatureEnabled
-        try await humidityC.enableNotification(true)
+        eve = try await Eve(from: mgr)
         state = .active
-    }
-
-    @MainActor
-    private func nextReading() {
-        guard let temperature = temperatureC?.temperature,
-              let humidity = humidityC?.humidity
-        else { return }
-        self.temperature = temperature
-        self.humidity = humidity
-        readings.add(item: Reading(temperature: temperature,
-                                   humidity: humidity))
     }
 }
 
@@ -77,17 +35,6 @@ extension HomeStore: HMHomeManagerDelegate {
             } catch {
                 self.error = HomeError(error: error, state: state)
             }
-        }
-    }
-}
-
-extension HomeStore: HMAccessoryDelegate {
-    func accessory(_: HMAccessory,
-                   service _: HMService,
-                   didUpdateValueFor _: HMCharacteristic)
-    {
-        Task { @MainActor in
-            nextReading()
         }
     }
 }

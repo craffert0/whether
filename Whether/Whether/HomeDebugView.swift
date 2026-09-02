@@ -7,16 +7,6 @@ struct HomeDebugView: View {
     @Environment(HomeStore.self) private var homeStore
 
     var body: some View {
-        ScrollView {
-            Grid {
-                ForEach(homeStore.readings.elements.reversed()) { e in
-                    GridRow {
-                        Text(e.time.plain_time)
-                        Text(e.item.temperature.whether)
-                        Text(e.item.humidity.whether)
-                    }
-                }
-            }
-        }
+        Text("feed me")
     }
 }

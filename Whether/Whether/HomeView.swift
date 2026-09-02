@@ -14,8 +14,8 @@ struct HomeView: View {
             }.sheet(isPresented: $isErrorPresented) {
                 Text(error.error.localizedDescription).padding()
             }
-        } else if let temperature = store.temperature,
-                  let humidity = store.humidity
+        } else if let temperature = store.eve?.temperature,
+                  let humidity = store.eve?.humidity
         {
             Text("Home \(temperature.whether) \(humidity.whether)")
                 .font(.subheadline)
