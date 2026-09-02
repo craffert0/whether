@@ -16,21 +16,16 @@ class HomeStore: NSObject {
         super.init()
         mgr.delegate = self
     }
-
-    @MainActor
-    private func setupEve(_ mgr: HMHomeManager) async throws {
-        guard eve == nil else { return }
-        eve = try await Eve(from: mgr)
-        state = .active
-        await eve?.dump()
-    }
 }
 
 extension HomeStore: HMHomeManagerDelegate {
     func homeManagerDidUpdateHomes(_ mgr: HMHomeManager) {
         Task { @MainActor in
+            guard eve == nil else { return }
             do {
-                try await setupEve(mgr)
+                eve = try await Eve(from: mgr)
+                state = .active
+                await eve?.dump()
             } catch let error as HomeError {
                 self.error = error
             } catch {
