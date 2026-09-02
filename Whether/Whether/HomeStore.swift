@@ -22,6 +22,7 @@ class HomeStore: NSObject {
         guard eve == nil else { return }
         eve = try await Eve(from: mgr)
         state = .active
+        await eve?.dump()
     }
 }
 
