@@ -23,7 +23,6 @@ extension HomeStore: HMHomeManagerDelegate {
             guard eve == nil else { return }
             do {
                 eve = try await Eve(from: mgr)
-                await eve?.dump()
             } catch {
                 self.error = error
             }

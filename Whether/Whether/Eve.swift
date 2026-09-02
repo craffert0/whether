@@ -70,45 +70,6 @@ extension Eve: HMAccessoryDelegate {
     }
 }
 
-private func dumpv(_ s: String, _ v: Any?) {
-    if let v {
-        print("\(s): \(v)")
-    }
-}
-
-extension Eve {
-    func dump() async {
-        for s in actual.services {
-            print("  \(s.name) \(s.isPrimaryService ? "y" : "n")/\(s.isUserInteractive ? "y" : "n"): \(s.serviceType.serviceTypeReadable ?? s.serviceType)")
-            dumpv("  associatedServiceType", s.associatedServiceType)
-            dumpv("  linkedServices", s.linkedServices?.map(\.name))
-            for c in s.characteristics {
-                print("   \(c.localizedDescription): \(c.characteristicType.characteristicTypeReadable ?? c.characteristicType): \(c.properties.map { $0.dropFirst(24) })")
-                if c.properties.contains(HMCharacteristicPropertyReadable) {
-                    do {
-                        try await c.readValue()
-                        if let value = c.value {
-                            print("      value: \(value)")
-                        }
-                    } catch {
-                        print("      value error: \(error)")
-                    }
-                }
-                if let m = c.metadata {
-                    dumpv("      manufacturerDescription", m.manufacturerDescription)
-                    dumpv("      validValues", m.validValues)
-                    dumpv("      minimumValue", m.minimumValue)
-                    dumpv("      maximumValue", m.maximumValue)
-                    dumpv("      stepValue", m.stepValue)
-                    dumpv("      maxLength", m.maxLength)
-                    dumpv("      format", m.format)
-                    dumpv("      units", m.units)
-                }
-            }
-        }
-    }
-}
-
 //   for s in actual.services {
 //       print("  \(s.name) \(s.isPrimaryService ? "y" : "n")/\(s.isUserInteractive ? "y" : "n"): \(s.serviceType.serviceTypeReadable ?? s.serviceType)")
 //       for c in s.characteristics {
