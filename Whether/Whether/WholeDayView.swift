@@ -83,21 +83,19 @@ struct WholeDayView: View {
         }
     }
 
+    @ViewBuilder
     private func snowfallAmountView(_ amt: SnowfallAmount) -> some View {
-        Group {
-            if amt.maximum.value != 0 {
-                Text("snow: \(amt.minimum.whetherRange(through: amt.maximum))")
-            }
+        if amt.maximum.value != 0 {
+            Text("snow: \(amt.minimum.whetherRange(through: amt.maximum))")
         }
     }
 
+    @ViewBuilder
     private func onePrecipitationView(_ m: Measurement<UnitLength>,
                                       _ tag: String) -> some View
     {
-        Group {
-            if m.value != 0 {
-                Text("\(tag): \(m.whether)")
-            }
+        if m.value != 0 {
+            Text("\(tag): \(m.whether)")
         }
     }
 }
