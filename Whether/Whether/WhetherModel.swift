@@ -3,10 +3,11 @@
 
 import CoreLocation
 import Observation
-@preconcurrency import WeatherKit
+import WeatherKit
 
 @Observable
-class WhetherModel: NSObject {
+@MainActor
+final class WhetherModel: NSObject {
     private let locationManager = CLLocationManager()
     var locations = Series<CLLocation>()
     var location: CLLocation? {
@@ -40,9 +41,7 @@ class WhetherModel: NSObject {
         else {
             return
         }
-        Task { @MainActor in
-            self.weathers.add(item: weather)
-        }
+        weathers.add(item: weather)
     }
 }
 
@@ -68,14 +67,12 @@ extension WhetherModel: CLLocationManagerDelegate {
                          didUpdateLocations locations: [CLLocation])
     {
         guard let location = locations.last else { return }
-        Task {
+        Task { @MainActor in
             guard let weather =
                 try? await WeatherService.shared.weather(for: location)
             else { return }
-            Task { @MainActor in
-                self.locations.add(item: location)
-                self.weathers.add(item: weather)
-            }
+            self.locations.add(item: location)
+            self.weathers.add(item: weather)
         }
     }
 }
