@@ -11,6 +11,7 @@ struct WhetherApp: App {
 
     init() {
         locationManagerDelegate = .init(delegate: model)
+        locationManagerDelegate.start()
     }
 
     var body: some Scene {

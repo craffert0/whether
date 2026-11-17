@@ -3,8 +3,8 @@
 
 import HomeKit
 
-public let HMServiceTypeEvePressure = "E863F00A-079E-48FF-8F27-9C2605A29F52"
-public let HMServiceTypeEveLogExchange = "E863F007-079E-48FF-8F27-9C2605A29F52"
+let HMServiceTypeEvePressure = "E863F00A-079E-48FF-8F27-9C2605A29F52"
+let HMServiceTypeEveLogExchange = "E863F007-079E-48FF-8F27-9C2605A29F52"
 
 public extension String {
     var serviceTypeReadable: String? {

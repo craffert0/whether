@@ -10,6 +10,9 @@ class LocationManagerDelegate: NSObject, CLLocationManagerDelegate {
     init(delegate: LocationUpdateProtocol) {
         self.delegate = delegate
         super.init()
+    }
+
+    func start() {
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.delegate = self
         locationManager.requestAlwaysAuthorization()
