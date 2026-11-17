@@ -59,7 +59,8 @@ class Eve: NSObject {
     }
 }
 
-extension Eve: HMAccessoryDelegate {
+extension Eve: @preconcurrency HMAccessoryDelegate {
+    @MainActor
     func accessory(_: HMAccessory,
                    service _: HMService,
                    didUpdateValueFor _: HMCharacteristic)

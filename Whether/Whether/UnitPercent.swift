@@ -3,14 +3,15 @@
 
 import Foundation
 
-class UnitPercent: Unit, @unchecked Sendable {
-    static var percent = UnitPercent()
+nonisolated class UnitPercent: Unit, @unchecked Sendable {
+    static let percent = UnitPercent()
 
     init() {
         super.init(symbol: "%")
     }
 
-    required convenience init?(coder _: NSCoder) {
-        self.init()
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
