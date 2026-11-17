@@ -8,6 +8,8 @@ import WeatherKit
 @Observable
 @MainActor
 final class WhetherModel: NSObject {
+    let service: WhetherService
+
     private let locationManager = CLLocationManager()
     var locations = Series<CLLocation>()
     var location: CLLocation? {
@@ -19,7 +21,10 @@ final class WhetherModel: NSObject {
         weathers.latest
     }
 
-    init(live: Bool = true) {
+    init(service: WhetherService,
+         live: Bool = true)
+    {
+        self.service = service
         super.init()
         if live {
             locationManager.desiredAccuracy = kCLLocationAccuracyBest
@@ -30,24 +35,23 @@ final class WhetherModel: NSObject {
 
     func refresh() {
         guard let location else { return }
-        Task {
+        Task { @MainActor in
             await refresh(for: location)
         }
     }
 
     private func refresh(for location: CLLocation) async {
-        guard let weather =
-            try? await WeatherService.shared.weather(for: location)
-        else {
-            return
-        }
+        guard let weather = await service.weather(for: location)
+        else { return }
         weathers.add(item: weather)
     }
 }
 
 extension WhetherModel {
-    convenience init(locations: Series<CLLocation>) {
-        self.init(live: false)
+    convenience init(service: WhetherService,
+                     locations: Series<CLLocation>)
+    {
+        self.init(service: service, live: false)
         self.locations = locations
     }
 }
@@ -67,12 +71,9 @@ extension WhetherModel: CLLocationManagerDelegate {
                          didUpdateLocations locations: [CLLocation])
     {
         guard let location = locations.last else { return }
+        self.locations.add(item: location)
         Task { @MainActor in
-            guard let weather =
-                try? await WeatherService.shared.weather(for: location)
-            else { return }
-            self.locations.add(item: location)
-            self.weathers.add(item: weather)
+            await refresh(for: location)
         }
     }
 }

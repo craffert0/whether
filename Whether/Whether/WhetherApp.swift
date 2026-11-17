@@ -5,7 +5,7 @@ import SwiftUI
 
 @main
 struct WhetherApp: App {
-    @State private var model = WhetherModel()
+    @State private var model = WhetherModel(service: WhetherKitService())
     @State private var homeStore = HomeStore()
 
     var body: some Scene {
