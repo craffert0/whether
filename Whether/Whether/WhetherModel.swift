@@ -7,10 +7,9 @@ import WeatherKit
 
 @Observable
 @MainActor
-final class WhetherModel: NSObject {
+final class WhetherModel {
     let service: WhetherService
 
-    private let locationManager = CLLocationManager()
     var locations = Series<CLLocation>()
     var location: CLLocation? {
         locations.latest
@@ -21,16 +20,8 @@ final class WhetherModel: NSObject {
         weathers.latest
     }
 
-    init(service: WhetherService,
-         live: Bool = true)
-    {
+    init(service: WhetherService) {
         self.service = service
-        super.init()
-        if live {
-            locationManager.desiredAccuracy = kCLLocationAccuracyBest
-            locationManager.delegate = self
-            locationManager.requestAlwaysAuthorization()
-        }
     }
 
     func refresh() {
@@ -51,27 +42,14 @@ extension WhetherModel {
     convenience init(service: WhetherService,
                      locations: Series<CLLocation>)
     {
-        self.init(service: service, live: false)
+        self.init(service: service)
         self.locations = locations
     }
 }
 
-extension WhetherModel: CLLocationManagerDelegate {
-    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        let status = manager.authorizationStatus
-        switch status {
-        case .authorizedWhenInUse, .authorizedAlways:
-            manager.startMonitoringSignificantLocationChanges()
-        default:
-            manager.stopMonitoringSignificantLocationChanges()
-        }
-    }
-
-    func locationManager(_: CLLocationManager,
-                         didUpdateLocations locations: [CLLocation])
-    {
-        guard let location = locations.last else { return }
-        self.locations.add(item: location)
+extension WhetherModel: LocationUpdateProtocol {
+    func didUpdate(location: CLLocation) {
+        locations.add(item: location)
         Task { @MainActor in
             await refresh(for: location)
         }

@@ -5,8 +5,13 @@ import SwiftUI
 
 @main
 struct WhetherApp: App {
-    @State private var model = WhetherModel(service: WhetherKitService())
-    @State private var homeStore = HomeStore()
+    private let homeStore = HomeStore()
+    private let model = WhetherModel(service: WhetherKitService())
+    private let locationManagerDelegate: LocationManagerDelegate
+
+    init() {
+        locationManagerDelegate = .init(delegate: model)
+    }
 
     var body: some Scene {
         WindowGroup {
