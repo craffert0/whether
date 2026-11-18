@@ -3,12 +3,15 @@
 
 import CoreLocation
 import Observation
+import SwiftUtil
 import WeatherKit
 
 @Observable
 @MainActor
 final class WhetherModel {
     let service: WhetherService
+
+    var home: LoadingState<HomeModel, Error> = .idle
 
     var locations = Series<CLLocation>()
     var location: CLLocation? {
@@ -53,5 +56,11 @@ extension WhetherModel: LocationUpdateProtocol {
         Task { @MainActor in
             await refresh(for: location)
         }
+    }
+}
+
+extension WhetherModel: HomeUpdateProtocol {
+    func didUpdate(home: LoadingState<HomeModel, Error>) {
+        self.home = home
     }
 }

@@ -4,12 +4,20 @@
 import SwiftUI
 
 struct BigImage: View {
-    @State var systemName: String
+    let systemName: String
+    let size: CGFloat
+
+    init(systemName: String,
+         size: CGFloat = 80)
+    {
+        self.systemName = systemName
+        self.size = size
+    }
 
     var body: some View {
         Image(systemName: systemName)
             .resizable()
             .scaledToFit()
-            .frame(width: 80, height: 80)
+            .frame(width: size, height: size)
     }
 }

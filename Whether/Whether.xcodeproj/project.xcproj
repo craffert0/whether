@@ -10,6 +10,15 @@
       "Base",
     ],
   },
+  "packages": [
+    {
+      "kind": "remote",
+      "repository": "https://gitlab.com/craffert0/swiftutil",
+      "version": {
+        "up-to-next-major-version": "2.1.0",
+      },
+    },
+  ],
   "files": [
     {
       "kind": "folder",
@@ -62,6 +71,17 @@
           "name": "Embed Watch Content",
           "bundle-base-path": "build-products-directory",
           "relative-path": "$(CONTENTS_FOLDER_PATH)/Watch",
+        },
+      ],
+      "package-product-members": [
+        {
+          "package": "swiftutil",
+          "product-name": "SwiftUIUtil",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "swiftutil",
+          "product-name": "SwiftUtil",
+          "build-phase": { "build-phase": "frameworks" },
         },
       ],
       "build-settings": {
