@@ -9,16 +9,17 @@ struct TodayView: View {
     @State var isDayPresented: Bool = false
 
     var body: some View {
-        Group {
+        Button {
+            isDayPresented = true
+        } label: {
             if Calendar.current.component(.hour, from: Date.now) < 18 {
                 DayView("Today", for: today.restOfDayForecast!)
             } else {
                 DayView("Overnight", for: today.overnightForecast)
             }
         }
-        .onTapGesture {
-            isDayPresented = true
-        }.sheet(isPresented: $isDayPresented) {
+        .buttonStyle(.plain)
+        .sheet(isPresented: $isDayPresented) {
             WholeDayView(day: today)
         }
     }

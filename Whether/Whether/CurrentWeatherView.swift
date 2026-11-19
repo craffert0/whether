@@ -12,12 +12,15 @@ struct CurrentWeatherView: View {
 
     var body: some View {
         VStack {
-            BigImage(systemName: w.symbolName)
-                .onTapGesture {
-                    isHourlyPresented = true
-                }.sheet(isPresented: $isHourlyPresented) {
-                    HourlyForecastView(h: h)
-                }
+            Button {
+                isHourlyPresented = true
+            } label: {
+                BigImage(systemName: w.symbolName)
+            }
+            .buttonStyle(.plain)
+            .sheet(isPresented: $isHourlyPresented) {
+                HourlyForecastView(h: h)
+            }
 
             Button {
                 isDetailPresented = true
