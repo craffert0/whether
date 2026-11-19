@@ -16,7 +16,9 @@ struct WhetherView: View {
             } else {
                 noWhetherView
             }
-            Button("Refresh") { model.refresh() }
+        }
+        .onShake {
+            model.refresh()
         }
     }
 
