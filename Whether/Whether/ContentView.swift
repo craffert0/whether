@@ -4,14 +4,12 @@
 import SwiftUI
 
 struct ContentView: View {
+    let model: WhetherModel
+
     var body: some View {
         VStack {
-            WhetherView()
+            WhetherView(model: model)
         }
         .padding()
     }
-}
-
-#Preview {
-    ContentView()
 }

@@ -4,7 +4,7 @@
 import SwiftUI
 
 struct WhetherDebugView: View {
-    @Environment(WhetherModel.self) private var model
+    @State var model: WhetherModel
 
     var body: some View {
         ScrollView {

@@ -5,7 +5,7 @@ import MapKit
 import SwiftUI
 
 struct LocationDebugView: View {
-    @Environment(WhetherModel.self) private var model
+    @State var model: WhetherModel
 
     var body: some View {
         VStack {
@@ -58,78 +58,77 @@ struct LocationDebugView: View {
 
 #Preview {
     VStack {
-        LocationDebugView()
-            .environment(
-                WhetherModel(
-                    service: MockWhetherService(),
-                    locations: {
-                        let locations: Series<CLLocation> = Series()
-                        var date = Date.now
-                        locations.elements.append(
-                            Series.Element(
-                                time: date,
-                                item: CLLocation(latitude: 40.690208,
-                                                 longitude: -73.985239)
-                            )
+        LocationDebugView(
+            model: .init(
+                service: MockWhetherService(),
+                locations: {
+                    let locations: Series<CLLocation> = Series()
+                    var date = Date.now
+                    locations.elements.append(
+                        Series.Element(
+                            time: date,
+                            item: CLLocation(latitude: 40.690208,
+                                             longitude: -73.985239)
                         )
-                        date = Calendar.current.date(byAdding: .minute, value: 1,
-                                                     to: date)!
-                        locations.elements.append(
-                            Series.Element(
-                                time: date,
-                                item: CLLocation(latitude: 40.685813,
-                                                 longitude: -73.983899)
-                            )
+                    )
+                    date = Calendar.current.date(byAdding: .minute, value: 1,
+                                                 to: date)!
+                    locations.elements.append(
+                        Series.Element(
+                            time: date,
+                            item: CLLocation(latitude: 40.685813,
+                                             longitude: -73.983899)
                         )
-                        date = Calendar.current.date(byAdding: .minute, value: 1,
-                                                     to: date)!
-                        locations.elements.append(
-                            Series.Element(
-                                time: date,
-                                item: CLLocation(latitude: 40.683780,
-                                                 longitude: -73.978614)
-                            )
+                    )
+                    date = Calendar.current.date(byAdding: .minute, value: 1,
+                                                 to: date)!
+                    locations.elements.append(
+                        Series.Element(
+                            time: date,
+                            item: CLLocation(latitude: 40.683780,
+                                             longitude: -73.978614)
                         )
-                        date = Calendar.current.date(byAdding: .minute, value: 1,
-                                                     to: date)!
-                        locations.elements.append(
-                            Series.Element(
-                                time: date,
-                                item: CLLocation(latitude: 40.680206,
-                                                 longitude: -73.974790)
-                            )
+                    )
+                    date = Calendar.current.date(byAdding: .minute, value: 1,
+                                                 to: date)!
+                    locations.elements.append(
+                        Series.Element(
+                            time: date,
+                            item: CLLocation(latitude: 40.680206,
+                                             longitude: -73.974790)
                         )
-                        date = Calendar.current.date(byAdding: .minute, value: 1,
-                                                     to: date)!
-                        locations.elements.append(
-                            Series.Element(
-                                time: date,
-                                item: CLLocation(latitude: 40.676346,
-                                                 longitude: -73.971717)
-                            )
+                    )
+                    date = Calendar.current.date(byAdding: .minute, value: 1,
+                                                 to: date)!
+                    locations.elements.append(
+                        Series.Element(
+                            time: date,
+                            item: CLLocation(latitude: 40.676346,
+                                             longitude: -73.971717)
                         )
-                        date = Calendar.current.date(byAdding: .minute, value: 1,
-                                                     to: date)!
-                        locations.elements.append(
-                            Series.Element(
-                                time: date,
-                                item: CLLocation(latitude: 40.672494,
-                                                 longitude: -73.970424)
-                            )
+                    )
+                    date = Calendar.current.date(byAdding: .minute, value: 1,
+                                                 to: date)!
+                    locations.elements.append(
+                        Series.Element(
+                            time: date,
+                            item: CLLocation(latitude: 40.672494,
+                                             longitude: -73.970424)
                         )
-                        date = Calendar.current.date(byAdding: .minute, value: 1,
-                                                     to: date)!
-                        locations.elements.append(
-                            Series.Element(
-                                time: date,
-                                item: CLLocation(latitude: 40.668548,
-                                                 longitude: -73.973408)
-                            )
+                    )
+                    date = Calendar.current.date(byAdding: .minute, value: 1,
+                                                 to: date)!
+                    locations.elements.append(
+                        Series.Element(
+                            time: date,
+                            item: CLLocation(latitude: 40.668548,
+                                             longitude: -73.973408)
                         )
+                    )
 
-                        return locations
-                    }()
-                )
+                    return locations
+                }()
             )
+        )
     }
 }

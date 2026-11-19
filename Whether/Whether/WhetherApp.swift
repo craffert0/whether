@@ -18,8 +18,7 @@ struct WhetherApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .environment(model)
+            ContentView(model: model)
         }
     }
 }

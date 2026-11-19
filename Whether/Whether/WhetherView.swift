@@ -5,7 +5,7 @@ import SwiftUI
 import WeatherKit
 
 struct WhetherView: View {
-    @Environment(WhetherModel.self) private var model
+    @State var model: WhetherModel
     @State private var isWeatherDebugPresented: Bool = false
 
     var body: some View {
@@ -52,10 +52,10 @@ struct WhetherView: View {
     private var debugView: some View {
         TabView {
             Tab("Weather", systemImage: "sunrise") {
-                WhetherDebugView()
+                WhetherDebugView(model: model)
             }
             Tab("Location", systemImage: "map") {
-                LocationDebugView()
+                LocationDebugView(model: model)
             }
         }
     }
