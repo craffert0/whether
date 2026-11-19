@@ -10,7 +10,6 @@ struct WhetherView: View {
 
     var body: some View {
         VStack {
-            Spacer()
             if let w = model.weather {
                 allWhetherView(w: w)
             } else {
@@ -24,14 +23,16 @@ struct WhetherView: View {
 
     @ViewBuilder
     private var noWhetherView: some View {
+        HomeView(home: model.home)
+        Spacer()
         BigImage(systemName: model.location == nil ? "location.slash" : "bolt.slash",
                  size: 120)
         Spacer()
-        HomeView(home: model.home)
     }
 
     @ViewBuilder
     private func allWhetherView(w: Weather) -> some View {
+        Spacer()
         CurrentWeatherView(w: w.currentWeather, h: w.hourlyForecast)
         if let m = w.minuteForecast {
             MinuteForecastView(with: m)
@@ -60,5 +61,36 @@ struct WhetherView: View {
                 LocationDebugView(model: model)
             }
         }
+    }
+}
+
+#Preview("nothing") {
+    VStack {
+        WhetherView(model: .init(service: MockWhetherService()))
+    }
+}
+
+#Preview("location only") {
+    VStack {
+        WhetherView(
+            model: {
+                var model = WhetherModel(service: MockWhetherService())
+                model.locations.add(item: .init(latitude: 40.67,
+                                                longitude: -73.97))
+                return model
+            }()
+        )
+    }
+}
+
+#Preview("home only") {
+    VStack {
+        WhetherView(
+            model: {
+                var model = WhetherModel(service: MockWhetherService())
+                model.home = .loaded(.rainy)
+                return model
+            }()
+        )
     }
 }

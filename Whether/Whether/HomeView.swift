@@ -42,49 +42,25 @@ struct HomeView: View {
 
 #Preview("basic") {
     VStack {
-        HomeView(home: .loaded(.init(
-            temperature: .init(value: 18.5,
-                               unit: .celsius),
-            humidity: .init(value: 42,
-                            unit: .percent)
-        )))
+        HomeView(home: .loaded(.basic))
     }
 }
 
 #Preview("low") {
     VStack {
-        HomeView(home: .loaded(.init(
-            temperature: .init(value: 18.5,
-                               unit: .celsius),
-            humidity: .init(value: 42,
-                            unit: .percent),
-            lowBattery: true
-        )))
+        HomeView(home: .loaded(.low))
     }
 }
 
 #Preview("rainy") {
     VStack {
-        HomeView(home: .loaded(.init(
-            temperature: .init(value: 18.5,
-                               unit: .celsius),
-            humidity: .init(value: 42,
-                            unit: .percent),
-            weatherTrend: .rain5
-        )))
+        HomeView(home: .loaded(.rainy))
     }
 }
 
 #Preview("both") {
     VStack {
-        HomeView(home: .loaded(.init(
-            temperature: .init(value: 18.5,
-                               unit: .celsius),
-            humidity: .init(value: 42,
-                            unit: .percent),
-            lowBattery: true,
-            weatherTrend: .rain5
-        )))
+        HomeView(home: .loaded(.both))
     }
 }
 
