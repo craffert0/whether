@@ -11,7 +11,10 @@ import WeatherKit
 final class WhetherModel {
     let service: WhetherService
 
-    var home: LoadingState<HomeModel, Error> = .idle
+    var homes = Series<LoadingState<HomeModel, Error>>()
+    var home: LoadingState<HomeModel, Error> {
+        homes.latest ?? .idle
+    }
 
     var locations = Series<CLLocation>()
     var location: CLLocation? {
@@ -61,6 +64,6 @@ extension WhetherModel: LocationUpdateProtocol {
 
 extension WhetherModel: HomeUpdateProtocol {
     func didUpdate(home: LoadingState<HomeModel, Error>) {
-        self.home = home
+        homes.add(item: home)
     }
 }

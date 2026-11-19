@@ -57,6 +57,9 @@ struct WhetherView: View {
             Tab("Weather", systemImage: "sunrise") {
                 WhetherDebugView(model: model)
             }
+            Tab("Home", systemImage: "apple.homekit") {
+                HomeDebugView(model: model)
+            }
             Tab("Location", systemImage: "map") {
                 LocationDebugView(model: model)
             }
@@ -74,7 +77,7 @@ struct WhetherView: View {
     VStack {
         WhetherView(
             model: {
-                var model = WhetherModel(service: MockWhetherService())
+                let model = WhetherModel(service: MockWhetherService())
                 model.locations.add(item: .init(latitude: 40.67,
                                                 longitude: -73.97))
                 return model
@@ -87,8 +90,8 @@ struct WhetherView: View {
     VStack {
         WhetherView(
             model: {
-                var model = WhetherModel(service: MockWhetherService())
-                model.home = .loaded(.rainy)
+                let model = WhetherModel(service: MockWhetherService())
+                model.homes.add(item: .loaded(.rainy))
                 return model
             }()
         )
