@@ -19,6 +19,11 @@ struct WhetherView: View {
             Spacer()
             TodayView(today: w.dailyForecast[0])
             HomeView(home: home)
+            if let alerts = w.weatherAlerts {
+                ForEach(alerts.pairs) {
+                    WeatherAlertView(alert: $0.a)
+                }
+            }
             Spacer()
             DailyForecastView(days: w.dailyForecast.forecast)
             Spacer()
